@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GymApp.GymTrackingService.Core\GymApp.GymTrackingService.Core.csproj" />
+    <ProjectReference Include="..\GymApp.GymTrackingService.Data\GymApp.GymTrackingService.Data.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\GymApp.Shared\GymApp.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
