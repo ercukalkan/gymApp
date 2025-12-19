@@ -1,0 +1,6 @@
+@GymApp.InventoryService.API_HostAddress = http://localhost:5017
+
+GET {{GymApp.InventoryService.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
