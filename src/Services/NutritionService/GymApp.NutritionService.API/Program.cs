@@ -1,5 +1,6 @@
 using GymApp.NutritionService.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using GymApp.NutritionService.Data.DbSeeder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,5 +20,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<NutritionContext>();
+    await DbSeeder.SeedAsync(dbContext);
+}
+
+app.MapGet("/", (NutritionContext context) => context.Foods.ToList());
 
 app.Run();
