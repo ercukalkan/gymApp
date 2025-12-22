@@ -34,7 +34,7 @@ namespace GymApp.NutritionService.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Diets");
+                    b.ToTable("Diets", (string)null);
                 });
 
             modelBuilder.Entity("GymApp.NutritionService.Data.Entities.Food", b =>
@@ -61,7 +61,7 @@ namespace GymApp.NutritionService.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Foods");
+                    b.ToTable("Foods", (string)null);
                 });
 
             modelBuilder.Entity("GymApp.NutritionService.Data.Entities.JunctionEntities.DietMeal", b =>
@@ -82,7 +82,7 @@ namespace GymApp.NutritionService.Data.Migrations
 
                     b.HasIndex("MealId");
 
-                    b.ToTable("DietMeals");
+                    b.ToTable("DietMeals", (string)null);
                 });
 
             modelBuilder.Entity("GymApp.NutritionService.Data.Entities.JunctionEntities.MealFood", b =>
@@ -103,7 +103,7 @@ namespace GymApp.NutritionService.Data.Migrations
 
                     b.HasIndex("MealId");
 
-                    b.ToTable("MealFoods");
+                    b.ToTable("MealFoods", (string)null);
                 });
 
             modelBuilder.Entity("GymApp.NutritionService.Data.Entities.Meal", b =>
@@ -118,7 +118,7 @@ namespace GymApp.NutritionService.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Meals");
+                    b.ToTable("Meals", (string)null);
                 });
 
             modelBuilder.Entity("GymApp.NutritionService.Data.Entities.JunctionEntities.DietMeal", b =>

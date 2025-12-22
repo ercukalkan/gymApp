@@ -15,5 +15,5 @@ public class Food
     public double Carbohydrates { get; set; }
     public double Fats { get; set; }
 
-    public ICollection<MealFood> MealFoods { get; set; } = null!;
+    public ICollection<MealFood> MealFoods { get; set; } = [];
 }

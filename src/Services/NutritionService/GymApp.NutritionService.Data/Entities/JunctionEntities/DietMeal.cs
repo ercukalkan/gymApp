@@ -8,8 +8,8 @@ public class DietMeal
     public Guid Id { get; set; }
 
     public Guid DietId { get; set; }
-    public Diet Diet { get; set; } = null!;
+    public Diet? Diet { get; set; } = null!;
 
     public Guid MealId { get; set; }
-    public Meal Meal { get; set; } = null!;
+    public Meal? Meal { get; set; } = null!;
 }
