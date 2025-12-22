@@ -1,12 +1,15 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace GymApp.NutritionService.Data.Entities.JunctionEntities;
 
 public class MealFood
 {
-    public int Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
 
-    public int MealId { get; set; }
+    public Guid MealId { get; set; }
     public Meal Meal { get; set; } = null!;
 
-    public int FoodId { get; set; }
+    public Guid FoodId { get; set; }
     public Food Food { get; set; } = null!;
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -14,9 +15,8 @@ namespace GymApp.NutritionService.Data.Migrations
                 name: "Diets",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -27,13 +27,12 @@ namespace GymApp.NutritionService.Data.Migrations
                 name: "Foods",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Calories = table.Column<int>(type: "int", nullable: false),
-                    Protein = table.Column<int>(type: "int", nullable: false),
-                    Carbohydrates = table.Column<int>(type: "int", nullable: false),
-                    Fats = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Calories = table.Column<double>(type: "float", nullable: false),
+                    Protein = table.Column<double>(type: "float", nullable: false),
+                    Carbohydrates = table.Column<double>(type: "float", nullable: false),
+                    Fats = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,9 +43,8 @@ namespace GymApp.NutritionService.Data.Migrations
                 name: "Meals",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -57,10 +55,9 @@ namespace GymApp.NutritionService.Data.Migrations
                 name: "DietMeals",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DietId = table.Column<int>(type: "int", nullable: false),
-                    MealId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DietId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MealId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,10 +80,9 @@ namespace GymApp.NutritionService.Data.Migrations
                 name: "MealFoods",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MealId = table.Column<int>(type: "int", nullable: false),
-                    FoodId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MealId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FoodId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
