@@ -1,2 +1,5 @@
+*.http
+*.txt
+
 obj
 bin
