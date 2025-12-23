@@ -1,0 +1,34 @@
+<header class="sticky top-0 z-50 bg-linear-to-r from-blue-600 to-blue-300 shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center gap-2 text-white hover:opacity-90 transition-opacity">
+        <div class="bg-white rounded-lg p-2">
+          <span class="text-2xl font-bold bg-linear-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">💪</span>
+        </div>
+        <span class="font-bold text-xl hidden sm:inline">GymApp</span>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="flex items-center gap-1 sm:gap-2">
+        <a routerLink="/gym-tracking" 
+           class="px-3 py-2 rounded-lg text-white font-medium hover:bg-blue hover:bg-opacity-20 transition-all duration-200">
+          🏋️ Workouts
+        </a>
+        <a routerLink="/inventory" 
+           class="px-3 py-2 rounded-lg text-white font-medium hover:bg-blue hover:bg-opacity-20 transition-all duration-200">
+          📦 Inventory
+        </a>
+        <a routerLink="/food" 
+           class="px-3 py-2 rounded-lg text-white font-medium hover:bg-blue hover:bg-opacity-20 transition-all duration-200">
+          🥗 Nutrition
+        </a>
+      </nav>
+
+      <!-- Profile -->
+      <button class="ml-2 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
+        <span class="text-xl">👤</span>
+      </button>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,21 @@
+<div class="food-card" routerLink="/food/{{food.id}}">
+  <h3 class="food-name">{{food.name}}</h3>
+  <div class="nutrition-info">
+    <div class="nutrition-item">
+      <span class="nutrition-label">Calories</span>
+      <span class="nutrition-value">{{food.calories}} kcal</span>
+    </div>
+    <div class="nutrition-item">
+      <span class="nutrition-label">Protein</span>
+      <span class="nutrition-value">{{food.protein}} g</span>
+    </div>
+    <div class="nutrition-item">
+      <span class="nutrition-label">Carbs</span>
+      <span class="nutrition-value">{{food.carbohydrates}} g</span>
+    </div>
+    <div class="nutrition-item">
+      <span class="nutrition-label">Fats</span>
+      <span class="nutrition-value">{{food.fats}} g</span>
+    </div>
+  </div>
+</div>

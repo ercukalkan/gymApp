@@ -1,0 +1,200 @@
+/* Main container */
+:host {
+  display: block;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+.detail-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Slide in animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header section */
+.detail-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.product-name {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+.product-subtitle {
+  font-size: 0.95rem;
+  margin: 0;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* Nutrition grid */
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Nutrition card */
+.nutrition-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 2px solid #e9ecef;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.nutrition-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, currentColor, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nutrition-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.nutrition-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Color variations */
+.nutrition-card.calories {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.nutrition-card.protein {
+  border-color: #4ecdc4;
+  color: #4ecdc4;
+}
+
+.nutrition-card.carbs {
+  border-color: #ffd93d;
+  color: #f5a623;
+}
+
+.nutrition-card.fats {
+  border-color: #95e1d3;
+  color: #38a169;
+}
+
+/* Card content */
+.nutrition-card-header {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+  margin-bottom: 0.75rem;
+}
+
+.nutrition-card-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.nutrition-card-unit {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e9ecef;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  :host {
+    padding: 1rem;
+  }
+
+  .detail-container {
+    border-radius: 12px;
+  }
+
+  .detail-header {
+    padding: 1.5rem 1.5rem;
+  }
+
+  .product-name {
+    font-size: 1.5rem;
+  }
+
+  .nutrition-grid {
+    padding: 1.5rem;
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nutrition-card-value {
+    font-size: 1.5rem;
+  }
+}

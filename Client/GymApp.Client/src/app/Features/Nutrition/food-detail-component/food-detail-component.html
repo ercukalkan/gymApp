@@ -1,0 +1,39 @@
+@if (product) {
+    <div class="detail-container">
+        <div class="detail-header">
+            <h1 class="product-name">{{ product.name }}</h1>
+            <p class="product-subtitle">Nutritional Information</p>
+        </div>
+
+        <div class="nutrition-grid">
+            <div class="nutrition-card calories">
+                <div class="nutrition-card-header">Calories</div>
+                <div class="nutrition-card-value">{{ product.calories }}</div>
+                <div class="nutrition-card-unit">kcal</div>
+            </div>
+
+            <div class="nutrition-card protein">
+                <div class="nutrition-card-header">Protein</div>
+                <div class="nutrition-card-value">{{ product.protein }}</div>
+                <div class="nutrition-card-unit">g</div>
+            </div>
+
+            <div class="nutrition-card carbs">
+                <div class="nutrition-card-header">Carbs</div>
+                <div class="nutrition-card-value">{{ product.carbohydrates }}</div>
+                <div class="nutrition-card-unit">g</div>
+            </div>
+
+            <div class="nutrition-card fats">
+                <div class="nutrition-card-header">Fats</div>
+                <div class="nutrition-card-value">{{ product.fats }}</div>
+                <div class="nutrition-card-unit">g</div>
+            </div>
+        </div>
+    </div>
+} @else {
+    <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Loading food details...</p>
+    </div>
+}
