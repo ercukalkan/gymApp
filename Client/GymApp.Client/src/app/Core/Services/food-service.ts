@@ -15,4 +15,16 @@ export class FoodService {
   public getFoodById(id: number) {
     return this.http.get<any>(`${this.baseUrl}/food/${id}`);
   }
+
+  public addFood(food: any) {
+    return this.http.post<any>(`${this.baseUrl}/food`, food);
+  }
+
+  public updateFood(id: number, food: any) {
+    return this.http.put<any>(`${this.baseUrl}/food/${id}`, food);
+  }
+
+  public deleteFood(id: number) {
+    return this.http.delete<any>(`${this.baseUrl}/food/${id}`);
+  }
 }

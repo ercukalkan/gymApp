@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from "@angular/router";
+import { FoodService } from '../../../Core/Services/food-service';
 
 @Component({
   selector: 'app-food-item-component',
@@ -13,4 +14,24 @@ import { RouterLink } from "@angular/router";
 })
 export class FoodItemComponent {
   @Input() food: any;
+  private foodService = inject(FoodService);
+
+  onDelete(event: Event): void {
+    event.stopPropagation();  // Prevent card navigation
+    
+    if (!confirm(`Delete "${this.food.name}"? This cannot be undone.`)) {
+      return;
+    }
+
+    this.foodService.deleteFood(this.food.id).subscribe({
+      next: () => {
+        // Optionally refresh parent or emit event
+        window.location.reload();  // Simple refresh - can be improved with event emitter
+      },
+      error: (err) => {
+        console.error('Error deleting food:', err);
+        alert('Failed to delete food.');
+      }
+    });
+  }
 }

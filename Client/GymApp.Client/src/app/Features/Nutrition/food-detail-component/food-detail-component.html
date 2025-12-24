@@ -1,39 +1,106 @@
-@if (product) {
-    <div class="detail-container">
-        <div class="detail-header">
-            <h1 class="product-name">{{ product.name }}</h1>
-            <p class="product-subtitle">Nutritional Information</p>
-        </div>
+<div class="form-container">
+  <div class="form-header">
+    <h1 class="form-title">Food Details</h1>
+    <p class="form-subtitle">{{mode == 'add' ? 'Add' : 'Edit'}} food nutritional information</p>
+  </div>
 
-        <div class="nutrition-grid">
-            <div class="nutrition-card calories">
-                <div class="nutrition-card-header">Calories</div>
-                <div class="nutrition-card-value">{{ product.calories }}</div>
-                <div class="nutrition-card-unit">kcal</div>
-            </div>
-
-            <div class="nutrition-card protein">
-                <div class="nutrition-card-header">Protein</div>
-                <div class="nutrition-card-value">{{ product.protein }}</div>
-                <div class="nutrition-card-unit">g</div>
-            </div>
-
-            <div class="nutrition-card carbs">
-                <div class="nutrition-card-header">Carbs</div>
-                <div class="nutrition-card-value">{{ product.carbohydrates }}</div>
-                <div class="nutrition-card-unit">g</div>
-            </div>
-
-            <div class="nutrition-card fats">
-                <div class="nutrition-card-header">Fats</div>
-                <div class="nutrition-card-value">{{ product.fats }}</div>
-                <div class="nutrition-card-unit">g</div>
-            </div>
-        </div>
+  <form [formGroup]="foodForm" class="food-form" (ngSubmit)="onSubmit()">
+    <!-- Food Name -->
+    <div class="form-group">
+      <label for="name" class="form-label">Food Name</label>
+      <input 
+        id="name" 
+        class="form-input"
+        formControlName="nameCtrl" 
+        type="text"
+        placeholder="e.g., Chicken Breast"
+        />
     </div>
-} @else {
-    <div class="loading-container">
-        <div class="loading-spinner"></div>
-        <p class="loading-text">Loading food details...</p>
+
+    <!-- Nutrition Grid -->
+    <div class="nutrition-inputs-grid">
+      <!-- Calories -->
+      <div class="form-group">
+        <label for="calories" class="form-label">Calories</label>
+        <div class="input-with-unit">
+          <input 
+            id="calories" 
+            class="form-input"
+            formControlName="caloriesCtrl" 
+            type="number"
+            placeholder="0"
+            min="0"
+            />
+          <span class="unit-label">kcal</span>
+        </div>
+      </div>
+
+      <!-- Protein -->
+      <div class="form-group">
+        <label for="protein" class="form-label">Protein</label>
+        <div class="input-with-unit">
+          <input 
+            id="protein" 
+            class="form-input"
+            formControlName="proteinCtrl" 
+            type="number"
+            placeholder="0"
+            min="0"
+            step="0.1"
+            />
+          <span class="unit-label">g</span>
+        </div>
+      </div>
+
+      <!-- Carbohydrates -->
+      <div class="form-group">
+        <label for="carbs" class="form-label">Carbohydrates</label>
+        <div class="input-with-unit">
+          <input 
+            id="carbs" 
+            class="form-input"
+            formControlName="carbsCtrl" 
+            type="number"
+            placeholder="0"
+            min="0"
+            step="0.1"
+            />
+          <span class="unit-label">g</span>
+        </div>
+      </div>
+
+      <!-- Fats -->
+      <div class="form-group">
+        <label for="fats" class="form-label">Fats</label>
+        <div class="input-with-unit">
+          <input 
+            id="fats" 
+            class="form-input"
+            formControlName="fatsCtrl" 
+            type="number"
+            placeholder="0"
+            min="0"
+            step="0.1"
+            />
+          <span class="unit-label">g</span>
+        </div>
+      </div>
     </div>
-}
+
+    <!-- Submit Button -->
+    <button type="submit" class="submit-button">
+      <span class="button-text">{{mode === 'add' ? 'Add Food' : 'Update Food'}}</span>
+    </button>
+
+    <!-- Delete Button (only in edit mode) -->
+    @if (mode === 'edit') {
+      <button 
+        type="button" 
+        class="delete-button" 
+        (click)="onDelete()"
+        [disabled]="isDeleting">
+        <span class="button-text">{{ isDeleting ? 'Deleting...' : 'Delete Food' }}</span>
+      </button>
+    }
+  </form>
+</div>

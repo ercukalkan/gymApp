@@ -1,5 +1,14 @@
 <div class="food-card" routerLink="/food/{{food.id}}">
-  <h3 class="food-name">{{food.name}}</h3>
+  <div class="card-header">
+    <h3 class="food-name">{{food.name}}</h3>
+    <button 
+      class="delete-btn" 
+      title="Delete food"
+      (click)="onDelete($event)"
+      type="button">
+      <span class="trash-icon">🗑️</span>
+    </button>
+  </div>
   <div class="nutrition-info">
     <div class="nutrition-item">
       <span class="nutrition-label">Calories</span>
