@@ -54,3 +54,6 @@ Thumbs.db
 .claude
 .github
 .angular
+
+.env
+appsettings.*.json
