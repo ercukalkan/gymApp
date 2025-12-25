@@ -1,0 +1,36 @@
+services:
+  gym-tracking-db:
+    image: postgres
+    container_name: gym-tracking-db-postgresql
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - gym-tracking-network
+    volumes:
+      - gym-tracking-db-data:/var/opt/postgresql/data
+  nutrition-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: nutrition-db-mssql
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      ACCEPT_EULA: ${ACCEPT_EULA}
+    ports:
+      - "1433:1433"
+    networks:
+      - nutrition-network
+    volumes:
+      - nutrition-db-data:/var/lib/mssql/data
+
+networks:
+  nutrition-network:
+    driver: bridge
+  gym-tracking-network:
+    driver: bridge
+
+volumes:
+  gym-tracking-db-data:
+  nutrition-db-data:
