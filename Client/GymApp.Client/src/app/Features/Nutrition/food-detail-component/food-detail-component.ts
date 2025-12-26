@@ -76,13 +76,13 @@ export class FoodDetailComponent implements OnInit {
 
   private createFood(food: any) {
     this.foodService.addFood(food).subscribe(response => {
-      this.router.navigate(['/food']);
+      this.routerRedirect();
     });
   }
 
   private updateFood(id: any, food: any) {
     this.foodService.updateFood(id, food).subscribe(response => {
-      this.router.navigate(['/food']);
+      this.routerRedirect();
     });
   }
 
@@ -96,7 +96,7 @@ export class FoodDetailComponent implements OnInit {
     this.foodService.deleteFood(id).subscribe({
       next: () => {
         this.isDeleting = false;
-        this.router.navigate(['/food']);
+        this.routerRedirect();
       },
       error: (err) => {
         this.isDeleting = false;
@@ -118,5 +118,9 @@ export class FoodDetailComponent implements OnInit {
         });
       this.cdr.detectChanges();
     });
+  }
+
+  private routerRedirect() {
+    this.router.navigate(['/nutrition/food']);
   }
 }

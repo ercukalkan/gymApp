@@ -1,0 +1,14 @@
+@if (exercises && exercises.length > 0) {
+    @for (exercise of exercises; track exercise.id) {
+        <app-exercise-item-component [exercise]="exercise"></app-exercise-item-component>
+    }
+} @else {
+    <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <p>No exercise items available.</p>
+    </div>
+}
+
+<button class="add-exercise-button" routerLink="/gym-tracking/exercise/add" title="Add new exercise">
+    <span class="button-icon">+</span>
+</button>

@@ -1,4 +1,4 @@
-<div class="food-card" routerLink="/food/{{food.id}}">
+<div class="food-card" [routerLink]="['/nutrition/food', food.id]">
   <div class="card-header">
     <h3 class="food-name">{{food.name}}</h3>
     <button 

@@ -1,0 +1,48 @@
+<div class="form-container">
+  <div class="form-header">
+    <h1 class="form-title">Exercise Details</h1>
+    <p class="form-subtitle">{{mode == 'add' ? 'Add' : 'Edit'}} exercise information</p>
+  </div>
+
+  <form [formGroup]="exerciseForm" class="exercise-form" (ngSubmit)="onSubmit()">
+    <!-- Exercise Name -->
+    <div class="form-group">
+      <label for="name" class="form-label">Exercise Name</label>
+      <input 
+        id="name" 
+        class="form-input"
+        formControlName="nameCtrl" 
+        type="text"
+        placeholder="e.g., Squats"
+        />
+    </div>
+
+    <!-- Exercise Description -->
+    <div class="form-group">
+      <label for="description" class="form-label">Description</label>
+      <input 
+        id="description" 
+        class="form-input"
+        formControlName="descriptionCtrl" 
+        type="text"
+        placeholder="Enter description"
+        />
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="submit-button">
+      <span class="button-text">{{mode === 'add' ? 'Add Exercise' : 'Update Exercise'}}</span>
+    </button>
+
+    <!-- Delete Button (only in edit mode) -->
+    @if (mode === 'edit') {
+      <button 
+        type="button" 
+        class="delete-button" 
+        (click)="onDelete()"
+        [disabled]="isDeleting">
+        <span class="button-text">{{ isDeleting ? 'Deleting...' : 'Delete Exercise' }}</span>
+      </button>
+    }
+  </form>
+</div>

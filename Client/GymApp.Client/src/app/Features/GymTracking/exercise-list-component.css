@@ -1,0 +1,80 @@
+/* Host component grid - full width layout */
+:host {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+  width: 100%;
+  position: relative;
+  max-width: none;
+  margin: 0;
+}
+
+/* Add exercise button - bottom right */
+.add-exercise-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  z-index: 1000;
+}
+
+.add-exercise-button:hover {
+  transform: scale(1.15) rotate(90deg);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+}
+
+.add-exercise-button:active {
+  transform: scale(0.95);
+}
+
+.button-icon {
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Empty state styling */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Responsive: adjust for tablets */
+@media (max-width: 768px) {
+  :host {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 640px) {
+  :host {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    max-width: 100%;
+  }
+}

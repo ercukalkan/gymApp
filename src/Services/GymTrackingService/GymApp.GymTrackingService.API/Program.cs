@@ -11,6 +11,7 @@ builder.Services.AddDbContext<GymTrackingContext>(options =>
 );
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -29,5 +30,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapControllers();
+app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
 
 app.Run();

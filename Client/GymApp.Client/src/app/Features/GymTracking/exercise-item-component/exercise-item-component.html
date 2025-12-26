@@ -1,0 +1,19 @@
+<div class="exercise-card" routerLink="/gym-tracking/exercise/{{exercise.id}}">
+  <div class="card-header">
+    <h3 class="exercise-name">{{exercise.name}}</h3>
+    <button 
+      class="delete-btn" 
+      title="Delete exercise"
+      (click)="onDelete($event)"
+      type="button">
+      <span class="trash-icon">🗑️</span>
+    </button>
+    <button 
+      class="complete-btn" 
+      title="Complete exercise"
+      (click)="onToggleComplete($event)"
+      type="button">
+      <span class="trash-icon">✅</span>
+    </button>
+  </div>
+</div>
