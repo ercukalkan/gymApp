@@ -1,6 +1,8 @@
 using GymApp.NutritionService.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Data.DbSeeder;
+using MassTransit;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,18 @@ builder.Services.AddDbContext<NutritionContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NutritionDatabase")));
 
 builder.Services.AddOpenApi();
+
+builder.Services.AddMassTransit(configure =>
+{
+    var entryAssembly = Assembly.GetExecutingAssembly();
+
+    configure.AddConsumers(entryAssembly);
+    configure.UsingRabbitMq((context, configure) =>
+    {
+        configure.Host("localhost", "/", h => { });
+        configure.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 

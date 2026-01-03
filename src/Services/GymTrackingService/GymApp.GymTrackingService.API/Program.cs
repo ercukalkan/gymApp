@@ -1,6 +1,8 @@
 using GymApp.GymTrackingService.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using GymApp.GymTrackingService.Data.DbSeeder;
+using MassTransit;
+using GymApp.GymTrackingService.API.PublisherServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +11,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<GymTrackingContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("GymTrackingDatabase"))
 );
+
+builder.Services.AddMassTransit(configurator =>
+{
+    configurator.SetKebabCaseEndpointNameFormatter();
+    configurator.UsingRabbitMq((context, configure) =>
+    {
+        configure.Host("localhost", configure => { });
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddCors();
+
+builder.Services.AddScoped<IPublisherService, PublisherService>();
 
 var app = builder.Build();
 

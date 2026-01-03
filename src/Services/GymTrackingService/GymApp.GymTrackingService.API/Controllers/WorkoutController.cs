@@ -2,12 +2,15 @@ using GymApp.GymTrackingService.Data.Entities;
 using GymApp.GymTrackingService.Data.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MassTransit;
+using GymApp.Shared.Events;
+using GymApp.GymTrackingService.API.PublisherServices;
 
 namespace GymApp.GymTrackingService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WorkoutController(GymTrackingContext context) : ControllerBase
+public class WorkoutController(GymTrackingContext context, IPublisherService publisherService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Workout>>> GetWorkouts()
@@ -57,5 +60,14 @@ public class WorkoutController(GymTrackingContext context) : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpPost]
+    [Route("Notify")]
+    public async Task<IActionResult> Notify(Workout workout)
+    {
+        await publisherService.PublishWorkoutCompletedEvent(workout);
+
+        return Ok();
     }
 }
