@@ -1,6 +1,8 @@
 using GymApp.NutritionService.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Data.DbSeeder;
+using GymApp.Shared.MessageQueues.Configuration;
+using GymApp.NutritionService.API.Features.EventConsumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,14 @@ builder.Services.AddDbContext<NutritionContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NutritionDatabase")));
 
 builder.Services.AddOpenApi();
+builder.Services.AddLogging();
+
+var rabbitmqHost = builder.Configuration["RabbitMQ:Host"] ?? "localhost";
+var rabbitmqUsername = builder.Configuration["RabbitMQ:Username"] ?? "guest";
+var rabbitmqPassword = builder.Configuration["RabbitMQ:Password"] ?? "guest";
+
+builder.Services.AddMassTransitConfiguration(rabbitmqHost, rabbitmqUsername, rabbitmqPassword, typeof(WorkoutCompletedEventConsumer));
+builder.Services.AddScoped<WorkoutCompletedEventConsumer>();
 
 var app = builder.Build();
 

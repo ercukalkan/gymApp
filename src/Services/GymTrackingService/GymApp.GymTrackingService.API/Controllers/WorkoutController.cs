@@ -2,12 +2,13 @@ using GymApp.GymTrackingService.Data.Entities;
 using GymApp.GymTrackingService.Data.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GymApp.GymTrackingService.API.Features.EventPublishers;
 
 namespace GymApp.GymTrackingService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WorkoutController(GymTrackingContext context) : ControllerBase
+public class WorkoutController(GymTrackingContext context, WorkoutCompletedEventPublisher publisher) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Workout>>> GetWorkouts()
@@ -57,5 +58,15 @@ public class WorkoutController(GymTrackingContext context) : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpPost("complete")]
+    public async Task<IActionResult> CompleteWorkout(Workout workout)
+    {
+        int durationMinutesHardcoded = 48;
+
+        await publisher.PublishWorkoutCompleted(workout.Id, durationMinutesHardcoded);
+
+        return Ok("WorkoutCompletedEvent published");
     }
 }
