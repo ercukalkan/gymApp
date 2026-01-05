@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Data.DbSeeder;
 using GymApp.Shared.MessageQueues.Configuration;
 using GymApp.NutritionService.API.Features.EventConsumers;
+using GymApp.Shared.RedisCache.Configuration;
+using GymApp.NutritionService.Core.Caching;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,12 +20,19 @@ builder.Services.AddDbContext<NutritionContext>(options =>
 builder.Services.AddOpenApi();
 builder.Services.AddLogging();
 
-var rabbitmqHost = builder.Configuration["RabbitMQ:Host"] ?? "localhost";
-var rabbitmqUsername = builder.Configuration["RabbitMQ:Username"] ?? "guest";
-var rabbitmqPassword = builder.Configuration["RabbitMQ:Password"] ?? "guest";
+builder.Services.AddMassTransitConfiguration(
+    builder.Configuration["RabbitMQ:Host"] ?? "localhost",
+    builder.Configuration["RabbitMQ:Username"] ?? "guest",
+    builder.Configuration["RabbitMQ:Password"] ?? "guest",
+    typeof(WorkoutCompletedEventConsumer)
+);
 
-builder.Services.AddMassTransitConfiguration(rabbitmqHost, rabbitmqUsername, rabbitmqPassword, typeof(WorkoutCompletedEventConsumer));
 builder.Services.AddScoped<WorkoutCompletedEventConsumer>();
+
+builder.Services.AddRedisConfiguration(
+    builder.Configuration.GetValue<string>("Redis:RedisCacheDb") ?? "localhost:6379"
+);
+builder.Services.AddSingleton<IRedisService, RedisService>();
 
 var app = builder.Build();
 
