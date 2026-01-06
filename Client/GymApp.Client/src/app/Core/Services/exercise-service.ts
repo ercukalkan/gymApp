@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ExerciseService {
   private http = inject(HttpClient);
-  private baseUrl: string = 'http://localhost:5082/api';
+  private baseUrl: string = 'http://localhost:5000/api/gym-tracking';
 
   public getExercises() {
     return this.http.get<any>(`${this.baseUrl}/exercise`);

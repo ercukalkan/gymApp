@@ -48,6 +48,24 @@ services:
       - nutrition-network
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+  # api-gateway:
+  #   build:
+  #     context: .
+  #     dockerfile: GymApp.Ocelot.Gateway/Dockerfile
+  #   container_name: api-gateway
+  #   ports:
+  #     - "5000:8080"
+  #   networks:
+  #     - gym-tracking-network
+  #     - nutrition-network
+  #   depends_on:
+  #     - gym-tracking-db
+  #     - nutrition-db
+  #     - redis
+  #     - rabbitmq
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:8080
 
 networks:
   nutrition-network:

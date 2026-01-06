@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class FoodService {
   private http = inject(HttpClient);
-  private baseUrl: string = 'http://localhost:5181/api';
+  private baseUrl: string = 'http://localhost:5000/api/nutrition';
 
   public getFoods() {
     return this.http.get<any>(`${this.baseUrl}/food`);
