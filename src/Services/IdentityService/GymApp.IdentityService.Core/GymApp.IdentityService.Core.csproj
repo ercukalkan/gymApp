@@ -1,5 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\GymApp.IdentityService.Data\GymApp.IdentityService.Data.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\GymApp.Shared\GymApp.Shared.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
