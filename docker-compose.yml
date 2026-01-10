@@ -66,11 +66,25 @@ services:
   #   environment:
   #     - ASPNETCORE_ENVIRONMENT=Development
   #     - ASPNETCORE_URLS=http://+:8080
+  identity-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: identity-db-mssql
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      ACCEPT_EULA: ${ACCEPT_EULA}
+    ports:
+      - "1434:1433"
+    networks:
+      - identity-network
+    volumes:
+      - identity-db-data:/var/lib/mssql/data
 
 networks:
   nutrition-network:
     driver: bridge
   gym-tracking-network:
+    driver: bridge
+  identity-network:
     driver: bridge
 
 volumes:
@@ -78,3 +92,4 @@ volumes:
   nutrition-db-data:
   rabbitmq-data:
   redis-data:
+  identity-db-data:
