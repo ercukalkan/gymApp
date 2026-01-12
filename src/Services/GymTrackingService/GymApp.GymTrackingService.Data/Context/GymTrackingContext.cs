@@ -12,4 +12,7 @@ public class GymTrackingContext(DbContextOptions<GymTrackingContext> options) : 
 
     public DbSet<WorkoutExercise> WorkoutExercises { get; set; } = null!;
     public DbSet<ExerciseMuscleGroup> ExerciseMuscleGroups { get; set; } = null!;
+
+    public DbSet<Student> Students { get; set; } = null!;
+    public DbSet<Trainer> Trainers { get; set; } = null!;
 }
