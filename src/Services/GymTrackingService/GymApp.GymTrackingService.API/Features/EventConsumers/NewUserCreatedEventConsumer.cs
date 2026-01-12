@@ -11,7 +11,7 @@ public class NewUserCreatedEventConsumer(ILogger<NewUserCreatedEventConsumer> lo
     {
         var @event = context.Message;
 
-        logger.LogInformation(
+        logger.LogCritical(
             "NewUserCreated event consumed: User Id: {UserId}, Username: {Username}, Created At: {CreatedAt}",
             @event.UserId,
             @event.Username,
@@ -30,7 +30,7 @@ public class NewUserCreatedEventConsumer(ILogger<NewUserCreatedEventConsumer> lo
         gymTrackingContext.Students.Add(newStudent);
         await gymTrackingContext.SaveChangesAsync();
 
-        logger.LogCritical("New student added to GymTrackingContext with User Id: {UserId}", newStudent.UserId);
+        logger.LogCritical("New student added to GymTrackingContext with User Id: {UserId}, Time: {time}", newStudent.UserId, DateTime.Now);
 
         await Task.CompletedTask;
     }

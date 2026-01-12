@@ -10,7 +10,7 @@ public class WorkoutCompletedEventPublisher(ILogger<WorkoutCompletedEventPublish
         var @event = new WorkoutCompletedEvent
         {
             WorkoutId = workoutId,
-            CompletedAt = DateTime.UtcNow,
+            CompletedAt = DateTime.Now,
             DurationMinutes = durationMinutes
         };
 

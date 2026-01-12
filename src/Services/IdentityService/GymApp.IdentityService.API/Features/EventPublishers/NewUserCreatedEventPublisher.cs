@@ -10,11 +10,11 @@ public class NewUserCreatedEventPublisher(ILogger<NewUserCreatedEventPublisher> 
         var @event = new NewUserCreatedEvent
         {
             UserId = userId,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = DateTime.Now,
             Username = username
         };
 
-        logger.LogCritical("NewUserCreatedEvent was published");
+        logger.LogCritical("NewUserCreatedEvent was published {time}", DateTime.Now);
 
         await publishEndpoint.Publish(@event);
     }

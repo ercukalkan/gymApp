@@ -16,6 +16,8 @@ builder.Services.AddDbContext<IdentityContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDatabase"))
 );
 
+builder.Services.AddCors();
+
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
@@ -44,6 +46,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(policy =>
+    policy.AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowAnyOrigin()
+);
 
 app.UseAuthentication();
 app.UseAuthorization();

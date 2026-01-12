@@ -5,43 +5,43 @@
             <p>Create your fitness account</p>
         </div>
 
-        <form class="register-form">
+        <form class="register-form" (ngSubmit)="onSubmit()" novalidate>
             <div class="form-group">
                 <label for="firstName">First Name</label>
-                <input type="text" id="firstName" required>
+                <input type="text" id="firstName" [(ngModel)]="firstName" name="firstName" required>
             </div>
 
             <div class="form-group">
                 <label for="lastName">Last Name</label>
-                <input type="text" id="lastName" required>
+                <input type="text" id="lastName" [(ngModel)]="lastName" name="lastName" required>
             </div>
             
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" required>
+                <input type="text" id="username" [(ngModel)]="username" name="username" required>
             </div>
 
             <div class="form-group">
                 <label for="birthDate">Birth Date</label>
-                <input type="date" id="birthDate" required>
+                <input type="date" id="birthDate" [(ngModel)]="birthDate" name="birthDate" required>
             </div>
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" [(ngModel)]="email" name="email" required>
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" required>
+                <input type="password" id="password" [(ngModel)]="password" name="password" required>
             </div>
 
             <div class="form-group">
                 <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" required>
+                <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required>
             </div>
 
-            <button type="submit" class="btn-register">Get Started</button>
+            <button type="button" class="btn-register" (click)="onSubmit()">Get Started</button>
         </form>
 
         <div class="login-link">
