@@ -1,0 +1,35 @@
+::ng-deep .auth-menu {
+  min-width: 180px;
+}
+
+::ng-deep .auth-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .auth-button:hover {
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+::ng-deep .login-button mat-icon {
+  color: #2563eb;
+}
+
+::ng-deep .login-button {
+  color: #2563eb;
+}
+
+::ng-deep .register-button mat-icon {
+  color: #16a34a;
+}
+
+::ng-deep .register-button {
+  color: #16a34a;
+}
+
+::ng-deep .register-button:hover {
+  background-color: rgba(22, 163, 74, 0.08);
+}

@@ -29,14 +29,15 @@
       <button matButton [mat-menu-trigger-for]="menu" class="ml-2 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
         <span class="text-xl">👤</span>
       </button>
-      <mat-menu #menu="matMenu">
-        <button routerLink="" mat-menu-item>
-          <mat-icon>login</mat-icon>
-          <span>Login</span>
+      <mat-menu #menu="matMenu" class="auth-menu">
+        <button routerLink="/identity/login" mat-menu-item class="auth-button login-button">
+          <mat-icon class="text-blue-600">login</mat-icon>
+          <span class="font-semibold">Login</span>
         </button>
-        <button routerLink="" mat-menu-item>
-          <mat-icon>person_add</mat-icon>
-          <span>Register</span>
+        <mat-divider></mat-divider>
+        <button routerLink="/identity/register" mat-menu-item class="auth-button register-button">
+          <mat-icon class="text-green-600">person_add</mat-icon>
+          <span class="font-semibold">Register</span>
         </button>
       </mat-menu>
     </div>
