@@ -26,9 +26,19 @@
       </nav>
 
       <!-- Profile -->
-      <button class="ml-2 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
+      <button matButton [mat-menu-trigger-for]="menu" class="ml-2 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
         <span class="text-xl">👤</span>
       </button>
+      <mat-menu #menu="matMenu">
+        <button routerLink="" mat-menu-item>
+          <mat-icon>login</mat-icon>
+          <span>Login</span>
+        </button>
+        <button routerLink="" mat-menu-item>
+          <mat-icon>person_add</mat-icon>
+          <span>Register</span>
+        </button>
+      </mat-menu>
     </div>
   </div>
 </header>

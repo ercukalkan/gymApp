@@ -76,4 +76,11 @@ public class AuthController(
 
         return BadRequest(result.Errors);
     }
+
+    [HttpGet("test")]
+    public async Task<IActionResult> Test()
+    {
+        await Task.Yield();
+        return Ok("Auth Service is running.");
+    }
 }
