@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using GymApp.GymTrackingService.Data.DbSeeder;
 using GymApp.Shared.MessageQueues.Configuration;
 using GymApp.GymTrackingService.API.Features.EventPublishers;
+using GymApp.GymTrackingService.API.Features.EventConsumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +20,9 @@ var rabbitmqHost = builder.Configuration["RabbitMQ:Host"] ?? "localhost";
 var rabbitmqUsername = builder.Configuration["RabbitMQ:Username"] ?? "guest";
 var rabbitmqPassword = builder.Configuration["RabbitMQ:Password"] ?? "guest";
 
-builder.Services.AddMassTransitConfiguration(rabbitmqHost, rabbitmqUsername, rabbitmqPassword);
+builder.Services.AddMassTransitConfiguration(rabbitmqHost, rabbitmqUsername, rabbitmqPassword, typeof(NewUserCreatedEventConsumer));
 builder.Services.AddScoped<WorkoutCompletedEventPublisher>();
+builder.Services.AddScoped<NewUserCreatedEventConsumer>();
 
 var app = builder.Build();
 

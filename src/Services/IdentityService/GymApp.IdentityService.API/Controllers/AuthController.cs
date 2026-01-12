@@ -2,12 +2,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using GymApp.IdentityService.Data.Entities;
 using GymApp.IdentityService.Core.DTOs;
+using GymApp.IdentityService.API.Features.EventPublishers;
 
 namespace GymApp.IdentityService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager) : ControllerBase
+public class AuthController(
+    ILogger<AuthController> _logger,
+    UserManager<ApplicationUser> _userManager,
+    SignInManager<ApplicationUser> _signInManager,
+    NewUserCreatedEventPublisher _newUserCreatedEventPublisher) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
@@ -24,7 +29,15 @@ public class AuthController(UserManager<ApplicationUser> _userManager, SignInMan
 
         var result = await _userManager.CreateAsync(user, request.Password);
 
-        if (result.Succeeded) return Ok();
+        if (result.Succeeded)
+        {
+            _logger.LogCritical("User '{Username}' registered successfully.", user.UserName);
+            _logger.LogInformation("Trying to create Student entity by publishing NewUserCreatedEvent.");
+
+            await _newUserCreatedEventPublisher.PublishNewUserCreated(user.Id, user.UserName!);
+
+            return Ok();
+        }
 
         return BadRequest(result.Errors);
     }
@@ -44,5 +57,23 @@ public class AuthController(UserManager<ApplicationUser> _userManager, SignInMan
     {
         await _signInManager.SignOutAsync();
         return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+        if (result.Succeeded)
+        {
+            return NoContent();
+        }
+
+        return BadRequest(result.Errors);
     }
 }

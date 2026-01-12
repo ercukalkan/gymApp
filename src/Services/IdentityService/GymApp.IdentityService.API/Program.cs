@@ -3,6 +3,8 @@ using GymApp.IdentityService.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GymApp.IdentityService.Data.DbSeeder;
+using GymApp.Shared.MessageQueues.Configuration;
+using GymApp.IdentityService.API.Features.EventPublishers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<IdentityContext>()
 .AddDefaultTokenProviders();
+
+builder.Services.AddMassTransitConfiguration("localhost", "guest", "guest");
+builder.Services.AddScoped<NewUserCreatedEventPublisher>();
 
 builder.Services.AddControllers();
 
