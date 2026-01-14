@@ -1,13 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { AuthService } from '../../Core/Services/auth-service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header-component',
   imports: [
+    CommonModule,
     RouterLink,
     MatButtonModule,
     MatMenuModule,
@@ -17,5 +20,21 @@ import { MatDividerModule } from '@angular/material/divider';
   templateUrl: './header-component.html',
   styleUrl: './header-component.css',
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  private authService = inject(AuthService);
+
+  isAuthenticated: boolean = false;
+  userEmail: string | null = null;
+
+  ngOnInit() {
+    this.authService.authState$.subscribe((state) => {
+      this.isAuthenticated = state.isAuthenticated;
+      this.userEmail = state.userEmail;
+    });
+  }
+
+  logout() {
+    this.authService.logout();
+    window.location.reload();
+  }
 }

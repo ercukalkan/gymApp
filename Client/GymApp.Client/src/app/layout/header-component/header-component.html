@@ -25,21 +25,40 @@
         </a>
       </nav>
 
-      <!-- Profile -->
-      <button matButton [mat-menu-trigger-for]="menu" class="ml-2 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
-        <span class="text-xl">👤</span>
-      </button>
-      <mat-menu #menu="matMenu" class="auth-menu">
-        <button routerLink="/identity/login" mat-menu-item class="auth-button login-button">
-          <mat-icon class="text-blue-600">login</mat-icon>
-          <span class="font-semibold">Login</span>
+      @if (isAuthenticated) {
+        <!-- User Menu -->
+        <button matButton [mat-menu-trigger-for]="userMenu" class="ml-2 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200 gap-2">
+          <span class="text-md">{{userEmail}}</span>
+          <mat-icon class="text-sm">expand_more</mat-icon>
         </button>
-        <mat-divider></mat-divider>
-        <button routerLink="/identity/register" mat-menu-item class="auth-button register-button">
-          <mat-icon class="text-green-600">person_add</mat-icon>
-          <span class="font-semibold">Register</span>
+        <mat-menu #userMenu="matMenu" class="auth-menu">
+          <button routerLink="/profile" mat-menu-item class="auth-button profile-button">
+            <mat-icon class="text-green-600">person</mat-icon>
+            <span class="font-semibold">Profile</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button (click)="logout()" mat-menu-item class="auth-button logout-button">
+            <mat-icon class="text-red-600">logout</mat-icon>
+            <span class="font-semibold">Logout</span>
+          </button>
+        </mat-menu>
+      } @else {
+        <!-- Profile -->
+        <button matButton [mat-menu-trigger-for]="menu" class="ml-2 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
+          <span class="text-xl">👤</span>
         </button>
-      </mat-menu>
+        <mat-menu #menu="matMenu" class="auth-menu">
+          <button routerLink="/identity/login" mat-menu-item class="auth-button login-button">
+            <mat-icon class="text-blue-600">login</mat-icon>
+            <span class="font-semibold">Login</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button routerLink="/identity/register" mat-menu-item class="auth-button register-button">
+            <mat-icon class="text-green-600">person_add</mat-icon>
+            <span class="font-semibold">Register</span>
+          </button>
+        </mat-menu>
+      }
     </div>
   </div>
 </header>

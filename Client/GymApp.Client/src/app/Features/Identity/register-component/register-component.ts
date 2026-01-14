@@ -39,6 +39,7 @@ export class RegisterComponent {
     this.authService.register(registerData).subscribe({
       next: (response) => {
         console.log('Registration successful', response);
+        window.location.replace('/identity/login');
       },
       error: (error) => {
         console.error('Registration failed', error);

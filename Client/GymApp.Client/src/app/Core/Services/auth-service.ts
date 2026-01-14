@@ -1,24 +1,35 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private isAuthenticated: boolean = false;
+  private authStateSubject = new BehaviorSubject<{ isAuthenticated: boolean; userEmail: string | null; }>(
+  {
+    isAuthenticated: localStorage.getItem('isAuthenticated') === 'true',
+    userEmail: localStorage.getItem('userEmail')
+  });
+  public authState$ = this.authStateSubject.asObservable();
+  
   private http = inject(HttpClient);
   private baseUrl: string = 'http://localhost:5000/api/identity/auth';
 
-  login() {
-    this.isAuthenticated = true;
+  login(userEmail: string) {
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('userEmail', userEmail);
+    this.authStateSubject.next({ isAuthenticated: true, userEmail: userEmail });
   }
 
   logout() {
-    this.isAuthenticated = false;
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('userEmail');
+    this.authStateSubject.next({ isAuthenticated: false, userEmail: null });
   }
 
   isLoggedIn(): boolean {
-    return this.isAuthenticated;
+    return this.authStateSubject.value.isAuthenticated;
   }
 
   register(data: any) {

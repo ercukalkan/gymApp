@@ -5,10 +5,12 @@
             <p>Login to your gym account</p>
         </div>
 
-        <form class="login-form">
+        <form class="login-form" (ngSubmit)="login()">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input
+                    [(ngModel)]="email"
+                    name="email"
                     type="email"
                     id="email"
                     required
@@ -18,6 +20,8 @@
             <div class="form-group">
                 <label for="password">Password</label>
                 <input
+                    [(ngModel)]="password"
+                    name="password"
                     type="password"
                     id="password"
                     required
