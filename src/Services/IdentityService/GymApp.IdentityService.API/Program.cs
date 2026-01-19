@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Identity;
 using GymApp.IdentityService.Data.DbSeeder;
 using GymApp.Shared.MessageQueues.Configuration;
 using GymApp.IdentityService.API.Features.EventPublishers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using GymApp.IdentityService.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +22,26 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 
 builder.Services.AddCors();
 
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!)
+            ),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidAudience = jwtSettings["Audience"],
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+        };
+    });
+
+builder.Services.AddScoped<ITokenService, TokenService>();
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -28,6 +51,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 4;
+    options.User.RequireUniqueEmail = true;
+    // options.SignIn.RequireConfirmedEmail = true;
 })
 .AddEntityFrameworkStores<IdentityContext>()
 .AddDefaultTokenProviders();

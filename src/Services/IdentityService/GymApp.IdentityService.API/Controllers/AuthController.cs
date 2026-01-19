@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using GymApp.IdentityService.Data.Entities;
 using GymApp.IdentityService.Core.DTOs;
 using GymApp.IdentityService.API.Features.EventPublishers;
+using GymApp.IdentityService.Core.Services;
+using GymApp.IdentityService.Data.Context;
 
 namespace GymApp.IdentityService.API.Controllers;
 
@@ -12,7 +14,8 @@ public class AuthController(
     ILogger<AuthController> _logger,
     UserManager<ApplicationUser> _userManager,
     SignInManager<ApplicationUser> _signInManager,
-    NewUserCreatedEventPublisher _newUserCreatedEventPublisher) : ControllerBase
+    NewUserCreatedEventPublisher _newUserCreatedEventPublisher,
+    ITokenService _tokenService) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
@@ -45,11 +48,50 @@ public class AuthController(
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
     {
-        var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
+        var user = await _userManager.FindByEmailAsync(request.Email);
 
-        if (result.Succeeded) return Ok();
+        if (user == null)
+        {
+            _logger.LogWarning("Login attempt with non-existent email: {email}", request.Email);
+            return Unauthorized(new { message = "Invalid credentials" });
+        }
 
-        return Unauthorized();
+        var result = await _signInManager.PasswordSignInAsync(user, request.Password, false, lockoutOnFailure: true);
+
+        if (!result.Succeeded)
+        {
+            _logger.LogWarning("Failed login attempt for user: {UserId}", user.Id);
+
+            if (result.IsLockedOut)
+                return Unauthorized(new { message = "Account locked. Try again later." });
+
+            return Unauthorized(new { message = "Invalid credentials" });
+        }
+
+        var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email!, user.UserName!);
+        var refreshToken = _tokenService.GenerateRefreshToken();
+
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        await _userManager.UpdateAsync(user);
+
+        _logger.LogInformation("User {userId} logged in successfully", user.Id);
+
+        return Ok(new LoginResponseDTO
+        {
+            Success = true,
+            AccessToken = accessToken,
+            RefreshToken = refreshToken,
+            ExpiresIn = 15,
+            User = new UserDTO
+            {
+                Id = user.Id,
+                Username = user.UserName!,
+                Email = user.Email!,
+                FirstName = user.FirstName ?? string.Empty,
+                LastName = user.LastName ?? string.Empty
+            }
+        });
     }
 
     [HttpPost("logout")]
