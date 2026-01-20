@@ -1,38 +1,70 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private authStateSubject = new BehaviorSubject<{ isAuthenticated: boolean; userEmail: string | null; }>(
-  {
-    isAuthenticated: localStorage.getItem('isAuthenticated') === 'true',
-    userEmail: localStorage.getItem('userEmail')
-  });
-  public authState$ = this.authStateSubject.asObservable();
-  
   private http = inject(HttpClient);
   private baseUrl: string = 'http://localhost:5000/api/identity/auth';
 
-  login(userEmail: string) {
-    localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('userEmail', userEmail);
-    this.authStateSubject.next({ isAuthenticated: true, userEmail: userEmail });
+  private authStateSubject = new BehaviorSubject<{ isAuthenticated: boolean, email: string | null }>
+  ({
+    isAuthenticated: !!localStorage.getItem('access-token'),
+    email: localStorage.getItem('email') || null
+  });
+  public authState$ = this.authStateSubject.asObservable();
+
+  login(data: any) {
+    return this.http.post<any>(`${this.baseUrl}/login`, data)
+      .pipe(
+        tap(res => {
+          localStorage.setItem('access-token', res.accessToken);
+          localStorage.setItem('refresh-token', res.refreshToken);
+          localStorage.setItem('email', res.user.email);
+        }),
+        tap(res => {
+          this.authStateSubject.next({
+            isAuthenticated: res.success,
+            email: res.user.email
+          });
+        }),
+        catchError(err => {
+          console.error('Login failed: ', err);
+          return throwError(() => err);
+        })
+      );
   }
 
   logout() {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userEmail');
-    this.authStateSubject.next({ isAuthenticated: false, userEmail: null });
-  }
+    this.clearLocalStorage();
 
-  isLoggedIn(): boolean {
-    return this.authStateSubject.value.isAuthenticated;
+    return this.http.post<any>(`${this.baseUrl}/logout`, null).pipe(
+      tap(() => {
+        this.authStateSubject.next({
+          isAuthenticated: false,
+          email: null
+        });
+      }),
+      catchError(err => {
+        console.error('Logout failed: ', err);
+        return throwError(() => err);
+      })
+    );
   }
 
   register(data: any) {
     return this.http.post<any>(`${this.baseUrl}/register`, data);
+  }
+
+  private clearLocalStorage() {
+    localStorage.removeItem('access-token');
+    localStorage.removeItem('refresh-token');
+    localStorage.removeItem('email');
+    this.authStateSubject.next({
+      isAuthenticated: false,
+      email: null
+    });
   }
 }

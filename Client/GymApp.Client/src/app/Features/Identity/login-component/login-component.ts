@@ -15,21 +15,17 @@ export class LoginComponent {
 
   email: string = '';
   password: string = '';
-  isAuthenticated: boolean = false;
 
   login() {
-    if (!this.email.trim()) {
-      alert('Email is required.');
-      return;
-    }
+    const data = {
+      email: this.email,
+      password: this.password
+    };
 
-    this.authService.login(this.email);
-    this.router.navigate(['/']);
+    this.authService.login(data).subscribe(() =>
+      {
+        this.router.navigate(['/']);
+      }
+    );
   }
-
-  logout() {
-    this.authService.logout();
-    window.location.reload();
-  }
-
 }
