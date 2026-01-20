@@ -9,7 +9,7 @@ namespace GymApp.IdentityService.Core.Services
 {
     public class TokenService(IConfiguration configuration, ILogger<TokenService> logger) : ITokenService
     {
-        public string GenerateAccessToken(string userId, string email, string username)
+        public string GenerateAccessToken(string userId, string email, string username, IList<string> roles)
         {
             try
             {
@@ -24,6 +24,11 @@ namespace GymApp.IdentityService.Core.Services
                     new(ClaimTypes.Name, username),
                     new("jti", Guid.NewGuid().ToString())
                 };
+
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
 
                 var token = new JwtSecurityToken(
                     issuer: jwtSettings["Issuer"],

@@ -3,6 +3,7 @@ using GymApp.NutritionService.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Core.Caching;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GymApp.NutritionService.API.Controllers;
 
@@ -10,6 +11,7 @@ namespace GymApp.NutritionService.API.Controllers;
 [Route("api/[controller]")]
 public class FoodController(NutritionContext context, IRedisService redisService) : ControllerBase
 {
+    [Authorize(Roles = "manager")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Food>>> GetFoods()
     {

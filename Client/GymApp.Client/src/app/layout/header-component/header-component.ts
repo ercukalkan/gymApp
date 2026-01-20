@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,6 +22,7 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent implements OnInit {
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   isAuthenticated: boolean = false;
   userEmail: string | null = null;
@@ -35,7 +36,8 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.authService.logout().subscribe(() => {
-      window.location.reload();
+      this.router.navigate(['/']);
+      // window.location.reload();
     });
   }
 }

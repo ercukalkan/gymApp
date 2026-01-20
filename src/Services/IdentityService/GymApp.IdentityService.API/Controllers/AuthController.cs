@@ -68,7 +68,12 @@ public class AuthController(
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email!, user.UserName!);
+        var accessToken = _tokenService.GenerateAccessToken(
+            user.Id,
+            user.Email!,
+            user.UserName!,
+            await _userManager.GetRolesAsync(user)
+        );
         var refreshToken = _tokenService.GenerateRefreshToken();
 
         user.RefreshToken = refreshToken;
