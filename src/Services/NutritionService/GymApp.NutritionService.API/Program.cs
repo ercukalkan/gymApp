@@ -5,6 +5,9 @@ using GymApp.Shared.MessageQueues.Configuration;
 using GymApp.NutritionService.API.Features.EventConsumers;
 using GymApp.Shared.RedisCache.Configuration;
 using GymApp.NutritionService.Core.Caching;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,24 @@ builder.Services.AddDbContext<NutritionContext>(options =>
 
 builder.Services.AddOpenApi();
 builder.Services.AddLogging();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = true,
+            ValidateIssuer = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!)),
+            ValidAudience = jwtSettings["Audience"],
+            ValidateLifetime = true,
+            ValidIssuer = jwtSettings["Issuer"]
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddMassTransitConfiguration(
     builder.Configuration["RabbitMQ:Host"] ?? "localhost",
@@ -47,6 +68,9 @@ app.UseCors(policy =>
 );
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
