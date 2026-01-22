@@ -17,7 +17,13 @@
                 "DELETE",
                 "PATCH"
             ],
-            "Key": "GymTrackingService"
+            "Key": "GymTrackingService",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKeys": [
+                    "Bearer"
+                ],
+                "AllowedScopes": []
+            }
         },
         {
             "DownstreamPathTemplate": "/api/{everything}",
@@ -36,7 +42,13 @@
                 "DELETE",
                 "PATCH"
             ],
-            "Key": "NutritionService"
+            "Key": "NutritionService",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKeys": [
+                    "Bearer"
+                ],
+                "AllowedScopes": []
+            }
         },
         {
             "DownstreamPathTemplate": "/api/{everything}",
@@ -55,7 +67,13 @@
                 "DELETE",
                 "PATCH"
             ],
-            "Key": "InventoryService"
+            "Key": "InventoryService",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKeys": [
+                    "Bearer"
+                ],
+                "AllowedScopes": []
+            }
         },
         {
             "DownstreamPathTemplate": "/api/{everything}",
