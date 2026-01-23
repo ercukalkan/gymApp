@@ -4,7 +4,7 @@ using GymApp.IdentityService.Data.Entities;
 using GymApp.IdentityService.Core.DTOs;
 using GymApp.IdentityService.API.Features.EventPublishers;
 using GymApp.IdentityService.Core.Services;
-using GymApp.IdentityService.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymApp.IdentityService.API.Controllers;
 
@@ -18,19 +18,20 @@ public class AuthController(
     ITokenService _tokenService) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
+    public async Task<IActionResult> Register([FromBody] RegisterRequestDTO requestDTO)
     {
         var user = new ApplicationUser
         {
-            Email = request.Email,
-            UserName = request.UserName,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            DateOfBirth = request.DateOfBirth,
-            Gender = request.Gender
+            Email = requestDTO.Email,
+            UserName = requestDTO.UserName,
+            FirstName = requestDTO.FirstName,
+            LastName = requestDTO.LastName,
+            DateOfBirth = requestDTO.DateOfBirth,
+            PhoneNumber = requestDTO.PhoneNumber,
+            Gender = requestDTO.Gender
         };
 
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var result = await _userManager.CreateAsync(user, requestDTO.Password);
 
         if (result.Succeeded)
         {
@@ -124,10 +125,66 @@ public class AuthController(
         return BadRequest(result.Errors);
     }
 
-    [HttpGet("test")]
-    public async Task<IActionResult> Test()
+    [HttpGet]
+    public async Task<ActionResult<IList<UserDTO>>> GetUsers()
     {
-        await Task.Yield();
-        return Ok("Auth Service is running.");
+        var users = await _userManager.Users.ToListAsync();
+
+        if (users == null) return NotFound();
+
+        var userDTOs = new List<UserDTO>();
+
+        foreach (var user in users)
+        {
+            userDTOs.Add(UserDTO.CreateDTOFromUser(user, await _userManager.GetRolesAsync(user)));
+        }
+
+        return Ok(userDTOs);
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetUserWithRoles(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null) return NotFound();
+
+        return Ok(UserDTO.CreateDTOFromUser(user, await _userManager.GetRolesAsync(user)));
+    }
+
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> UpdateUser(string id, [FromBody] UserUpdateRequestDTO requestDTO)
+    {
+        var existingUser = await _userManager.FindByIdAsync(id);
+
+        if (existingUser == null) return NotFound();
+
+        var existingUserRoles = await _userManager.GetRolesAsync(existingUser);
+
+        var rolesToRemove = existingUserRoles.Except(requestDTO.Roles);
+
+        if (rolesToRemove.Any())
+            await _userManager.RemoveFromRolesAsync(existingUser, rolesToRemove);
+
+        var rolesToAdd = requestDTO.Roles.Except(existingUserRoles);
+
+        if (rolesToAdd.Any())
+            await _userManager.AddToRolesAsync(existingUser, rolesToAdd);
+
+        existingUser.FirstName = requestDTO.UserDTO.FirstName ?? existingUser.FirstName;
+        existingUser.LastName = requestDTO.UserDTO.LastName ?? existingUser.LastName;
+        existingUser.Email = requestDTO.UserDTO.Email ?? existingUser.Email;
+        existingUser.PhoneNumber = requestDTO.UserDTO.PhoneNumber ?? existingUser.PhoneNumber;
+        existingUser.DateOfBirth = requestDTO.UserDTO.DateOfBirth ?? existingUser.DateOfBirth;
+
+        var result = await _userManager.UpdateAsync(existingUser);
+
+        if (result.Succeeded)
+        {
+            _logger.LogInformation("User {UserId} updated successfully", id);
+            return Ok(existingUser);
+        }
+
+        return BadRequest(result.Errors);
     }
 }
