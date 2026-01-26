@@ -1,0 +1,170 @@
+/* Table Container */
+.mat-mdc-table-container {
+  overflow: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+/* Main Table */
+table.mat-mdc-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Header Cells */
+.mat-mdc-header-cell {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 20px 16px !important;
+  height: auto;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mat-mdc-header-row {
+  height: auto;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Body Cells */
+.mat-mdc-cell {
+  padding: 18px 16px !important;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #e8e8e8;
+  vertical-align: middle;
+  font-weight: 500;
+}
+
+/* Rows */
+.mat-mdc-row {
+  height: auto;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.mat-mdc-row:hover {
+  background: linear-gradient(90deg, #f5f7ff 0%, #f0f4ff 100%);
+  box-shadow: inset 0 0 8px rgba(102, 126, 234, 0.1);
+  transform: scale(1.01);
+  z-index: 1;
+}
+
+/* Alternating Row Colors */
+.mat-mdc-row:nth-child(even) {
+  background: #fafbff;
+}
+
+.mat-mdc-row:nth-child(even):hover {
+  background: linear-gradient(90deg, #f5f7ff 0%, #f0f4ff 100%);
+}
+
+/* First and Last Row Border Radius */
+.mat-mdc-row:first-of-type .mat-mdc-cell:first-child {
+  border-top-left-radius: 12px;
+}
+
+.mat-mdc-row:first-of-type .mat-mdc-cell:last-child {
+  border-top-right-radius: 12px;
+}
+
+.mat-mdc-row:last-of-type .mat-mdc-cell:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+.mat-mdc-row:last-of-type .mat-mdc-cell:last-child {
+  border-bottom-right-radius: 12px;
+  border-bottom: none;
+}
+
+.mat-mdc-row:last-of-type .mat-mdc-cell {
+  border-bottom: none;
+}
+
+/* Table Wrapper */
+.table-wrapper {
+  padding: 24px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.table-wrapper h1 {
+  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  margin-top: 0;
+}
+
+/* Elevation and Shadow */
+.mat-elevation-z8 {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding: 12px 8px !important;
+    font-size: 12px;
+  }
+
+  .mat-mdc-header-cell {
+    padding: 16px 8px !important;
+  }
+
+  table.mat-mdc-table {
+    font-size: 12px;
+  }
+
+  .table-wrapper {
+    padding: 16px;
+  }
+
+  .table-wrapper h1 {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .mat-mdc-row:hover {
+    transform: scale(1);
+  }
+}
+
+/* Animations */
+.mat-mdc-row {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus and Accessibility */
+.mat-mdc-row:focus-within {
+  outline: 2px solid #667eea;
+  outline-offset: -2px;
+}
+
+/* Text Alignment */
+.mat-mdc-header-cell {
+  text-align: left;
+}
+
+.mat-mdc-cell {
+  text-align: left;
+}

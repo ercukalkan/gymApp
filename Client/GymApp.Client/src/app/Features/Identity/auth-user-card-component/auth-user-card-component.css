@@ -1,0 +1,278 @@
+.user-card-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 100%;
+}
+
+.user-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+/* Card Header */
+.user-card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: white;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.user-header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.user-email {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.user-role-badge.admin {
+  background: #ffd93d;
+  color: #333;
+}
+
+.user-role-badge.user {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+/* Card Body */
+.user-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.user-property {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.user-property:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.property-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+/* Input Styling */
+.user-property input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+}
+
+.user-property input[type="text"]:focus {
+  outline: none;
+  border-color: #667eea;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.user-property input[type="text"]:hover:not(:focus) {
+  border-color: #b0b0b0;
+  background-color: white;
+}
+
+.user-property input[type="text"]::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+/* Roles Display */
+.roles-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.role-chip {
+  display: inline-block;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.role-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.role-chip:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+.property-value {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  text-align: right;
+  max-width: 70%;
+  word-break: break-word;
+}
+
+.property-value.role-text {
+  font-weight: 600;
+}
+
+.property-value.admin-role {
+  color: #d63031;
+}
+
+.property-value.user-role {
+  color: #0984e3;
+}
+
+/* Card Footer */
+.user-card-footer {
+  padding: 16px 20px;
+  display: flex;
+  gap: 10px;
+  background: #fafafa;
+  border-top: 1px solid #f0f0f0;
+}
+
+.card-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.edit-btn {
+  background: #0984e3;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #2d5aa3;
+  transform: scale(1.02);
+}
+
+.edit-btn:active {
+  transform: scale(0.98);
+}
+
+.delete-btn {
+  background: #d63031;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #a02920;
+  transform: scale(1.02);
+}
+
+.delete-btn:active {
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .user-card {
+    max-width: 100%;
+  }
+
+  .user-card-header {
+    padding: 16px;
+  }
+
+  .user-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .user-email {
+    font-size: 14px;
+  }
+
+  .user-property {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .property-value {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .card-btn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}

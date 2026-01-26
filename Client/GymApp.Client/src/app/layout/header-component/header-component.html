@@ -32,12 +32,19 @@
           <mat-icon class="text-sm">expand_more</mat-icon>
         </button>
         <mat-menu #userMenu="matMenu" class="auth-menu">
-          <button routerLink="/profile" mat-menu-item class="auth-button profile-button">
+          @if (isAdmin) {
+            <button routerLink="/identity/auth-management" mat-menu-item class="auth-button">
+              <mat-icon class="text-red-600">shield</mat-icon>
+              <span class="font-semibold">Admin Dashboard</span>
+            </button>
+            <mat-divider></mat-divider>
+          }
+          <button routerLink="/profile" mat-menu-item class="auth-button">
             <mat-icon class="text-green-600">person</mat-icon>
             <span class="font-semibold">Profile</span>
           </button>
           <mat-divider></mat-divider>
-          <button (click)="logout()" mat-menu-item class="auth-button logout-button">
+          <button (click)="logout()" mat-menu-item class="auth-button">
             <mat-icon class="text-red-600">logout</mat-icon>
             <span class="font-semibold">Logout</span>
           </button>

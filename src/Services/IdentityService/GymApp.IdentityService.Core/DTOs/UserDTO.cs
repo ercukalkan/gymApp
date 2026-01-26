@@ -12,8 +12,9 @@ public class UserDTO
     public string PhoneNumber { get; set; } = string.Empty;
     public DateTime? DateOfBirth { get; set; }
     public IList<string> Roles { get; set; } = [];
+    public bool IsAdmin { get; set; } = false;
 
-    public static UserDTO CreateDTOFromUser(ApplicationUser user, IList<string> roles)
+    public static UserDTO CreateDTOFromUser(ApplicationUser user, IList<string> roles, bool isAdmin)
     {
         return new UserDTO
         {
@@ -24,7 +25,8 @@ public class UserDTO
             LastName = user.LastName!,
             PhoneNumber = user.PhoneNumber!,
             DateOfBirth = user.DateOfBirth,
-            Roles = roles
+            Roles = roles,
+            IsAdmin = isAdmin
         };
     }
 }

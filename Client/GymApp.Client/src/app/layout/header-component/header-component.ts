@@ -26,18 +26,19 @@ export class HeaderComponent implements OnInit {
 
   isAuthenticated: boolean = false;
   userEmail: string | null = null;
+  isAdmin: boolean = false;
 
   ngOnInit() {
     this.authService.authState$.subscribe(state => {
       this.isAuthenticated = state.isAuthenticated;
       this.userEmail = state.email;
+      this.isAdmin = state.isAdmin;
     });
   }
 
   logout() {
     this.authService.logout().subscribe(() => {
       this.router.navigate(['/']);
-      // window.location.reload();
     });
   }
 }

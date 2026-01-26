@@ -1,0 +1,65 @@
+<mat-dialog-content>
+    <div class="user-card-wrapper">
+        <div class="user-card">
+            <div class="user-card-header">
+                <div class="user-avatar">
+                    {{ data?.username?.charAt(0).toUpperCase() }}
+                </div>
+                <div class="user-header-info">
+                    <h3 class="user-email">{{ data?.email }}</h3>
+                    <span class="user-role-badge" [ngClass]="data?.isAdmin ? 'admin' : 'user'">
+                    {{ data?.isAdmin ? 'Admin' : 'User' }}
+                    </span>
+                </div>
+            </div>
+
+            <form [formGroup]="userForm" (ngSubmit)="onEdit()">
+                <div class="user-card-body">
+                    <div class="user-property">
+                        <label for="email" class="property-label">Email</label>
+                        <input id="email" type="text" formControlName="email">
+                    </div>
+
+                    <div class="user-property">
+                        <label for="username" class="property-label">Username</label>
+                        <input id="username" type="text" formControlName="username">
+                    </div>
+
+                    <div class="user-property">
+                        <label for="firstName" class="property-label">First Name</label>
+                        <input id="firstName" type="text" formControlName="firstName">
+                    </div>
+
+                    <div class="user-property">
+                        <label for="lastName" class="property-label">Last Name</label>
+                        <input id="lastName" type="text" formControlName="lastName">
+                    </div>
+
+                    <div class="user-property">
+                        <label for="phoneNumber" class="property-label">Phone Number</label>
+                        <input id="phoneNumber" type="text" formControlName="phoneNumber">
+                    </div>
+
+                    <div class="user-property">
+                        <label for="dateOfBirth" class="property-label">Date of Birth</label>
+                        <input id="dateOfBirth" type="text" formControlName="dateOfBirth">
+                    </div>
+
+                    <div class="user-property">
+                        <span class="property-label">Roles</span>
+                        <div class="roles-display">
+                            @for (role of this.selectedRoles; track $index) {
+                                <span class="role-chip" (click)="onRoleClick(role)">{{role}}</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-card-footer">
+                    <button type="submit" class="card-btn edit-btn">Edit</button>
+                    <button class="card-btn delete-btn" (click)="deleteUser()">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</mat-dialog-content>

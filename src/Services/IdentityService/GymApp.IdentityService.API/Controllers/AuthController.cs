@@ -89,14 +89,7 @@ public class AuthController(
             AccessToken = accessToken,
             RefreshToken = refreshToken,
             ExpiresIn = 15,
-            User = new UserDTO
-            {
-                Id = user.Id,
-                Username = user.UserName!,
-                Email = user.Email!,
-                FirstName = user.FirstName ?? string.Empty,
-                LastName = user.LastName ?? string.Empty
-            }
+            User = UserDTO.CreateDTOFromUser(user, await _userManager.GetRolesAsync(user), await _userManager.IsInRoleAsync(user, "admin"))
         });
     }
 
@@ -136,7 +129,7 @@ public class AuthController(
 
         foreach (var user in users)
         {
-            userDTOs.Add(UserDTO.CreateDTOFromUser(user, await _userManager.GetRolesAsync(user)));
+            userDTOs.Add(UserDTO.CreateDTOFromUser(user, await _userManager.GetRolesAsync(user), await _userManager.IsInRoleAsync(user, "admin")));
         }
 
         return Ok(userDTOs);
@@ -149,10 +142,10 @@ public class AuthController(
 
         if (user == null) return NotFound();
 
-        return Ok(UserDTO.CreateDTOFromUser(user, await _userManager.GetRolesAsync(user)));
+        return Ok(UserDTO.CreateDTOFromUser(user, await _userManager.GetRolesAsync(user), await _userManager.IsInRoleAsync(user, "admin")));
     }
 
-    [HttpPut("update/{id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(string id, [FromBody] UserUpdateRequestDTO requestDTO)
     {
         var existingUser = await _userManager.FindByIdAsync(id);

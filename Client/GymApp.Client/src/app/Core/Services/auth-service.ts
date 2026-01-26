@@ -9,10 +9,11 @@ export class AuthService {
   private http = inject(HttpClient);
   private baseUrl: string = 'http://localhost:5000/api/identity/auth';
 
-  private authStateSubject = new BehaviorSubject<{ isAuthenticated: boolean, email: string | null }>
+  private authStateSubject = new BehaviorSubject<{ isAuthenticated: boolean, email: string | null, isAdmin: boolean }>
   ({
     isAuthenticated: !!localStorage.getItem('access-token'),
-    email: localStorage.getItem('email') || null
+    email: localStorage.getItem('email') || null,
+    isAdmin: Boolean(localStorage.getItem('isAdmin')) || false
   });
   public authState$ = this.authStateSubject.asObservable();
 
@@ -23,11 +24,13 @@ export class AuthService {
           localStorage.setItem('access-token', res.accessToken);
           localStorage.setItem('refresh-token', res.refreshToken);
           localStorage.setItem('email', res.user.email);
+          localStorage.setItem('isAdmin', String(res.user.isAdmin));
         }),
         tap(res => {
           this.authStateSubject.next({
             isAuthenticated: res.success,
-            email: res.user.email
+            email: res.user.email,
+            isAdmin: res.user.isAdmin
           });
         }),
         catchError(err => {
@@ -44,7 +47,8 @@ export class AuthService {
       tap(() => {
         this.authStateSubject.next({
           isAuthenticated: false,
-          email: null
+          email: null,
+          isAdmin: false
         });
       }),
       catchError(err => {
@@ -58,13 +62,27 @@ export class AuthService {
     return this.http.post<any>(`${this.baseUrl}/register`, data);
   }
 
+  getUsers() {
+    return this.http.get<any>(`${this.baseUrl}`);
+  }
+
+  getUser(userId: any) {
+    return this.http.get<any>(`${this.baseUrl}/${userId}`);
+  }
+
+  updateUser(userId: any, user: any) {
+    return this.http.put(`${this.baseUrl}/${userId}`, user);
+  }
+
   private clearLocalStorage() {
     localStorage.removeItem('access-token');
     localStorage.removeItem('refresh-token');
     localStorage.removeItem('email');
+    localStorage.removeItem('isAdmin');
     this.authStateSubject.next({
       isAuthenticated: false,
-      email: null
+      email: null,
+      isAdmin: false
     });
   }
 }
