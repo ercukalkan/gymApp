@@ -7,6 +7,5 @@ import { AuthUserCardComponent } from "./auth-user-card-component/auth-user-card
 export const identityRoutes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
-    { path: 'auth-management', component: AuthManagementComponent },
-    { path: 'auth-user', component: AuthUserCardComponent }
+    { path: 'auth-management', component: AuthManagementComponent }
 ];

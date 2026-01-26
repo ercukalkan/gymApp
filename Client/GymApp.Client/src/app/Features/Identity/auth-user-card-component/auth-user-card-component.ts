@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { AuthService } from '../../../Core/Services/auth-service';
+import { RolePickerComponent } from '../role-picker-component/role-picker-component';
 
 @Component({
   selector: 'app-auth-user-card-component',
@@ -18,8 +19,13 @@ export class AuthUserCardComponent implements OnInit {
   data = inject(MAT_DIALOG_DATA);
   private authService = inject(AuthService);
   selectedRoles: string[] = [];
-  private dialogRef = inject(MatDialogRef<AuthUserCardComponent>);
+  private authUserDialogRef = inject(MatDialogRef<AuthUserCardComponent>);
   userForm!: FormGroup;
+  allRoles: string[] = [];
+  rolesWithSelections: any[] = [];
+  private cdr = inject(ChangeDetectorRef);
+
+  readonly dialog = inject(MatDialog);
 
   ngOnInit(): void {
     this.selectedRoles = [...this.data.roles];
@@ -50,16 +56,48 @@ export class AuthUserCardComponent implements OnInit {
     };
 
     this.authService.updateUser(this.data.id, user).subscribe(
-      () => this.dialogRef.close()
+      () => this.authUserDialogRef.close()
     );
   }
   
   deleteUser() {
-
+    this.authService.deleteUser(this.data.id).subscribe(
+      () => this.authUserDialogRef.close()
+    );
   }
 
-  onRoleClick(role: string) {
-    this.selectedRoles = this.selectedRoles.filter(sr => sr !== role);
-    this.userForm.patchValue({ roles: this.selectedRoles });
+  openDialog() {
+    this.authService.getRoles().subscribe(res => {
+      this.allRoles = res;
+
+      this.rolesWithSelections = this.createRolesWithSelectionsObject(this.selectedRoles, res);
+      
+      const dialogRef = this.dialog.open(RolePickerComponent, {
+        height: '500px',
+        width: '600px',
+        data: this.rolesWithSelections
+      });
+
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.selectedRoles = res;
+          this.userForm.patchValue({ roles: res });
+          this.cdr.detectChanges();
+        }
+      });
+    });
+  }
+
+  private createRolesWithSelectionsObject(arrCurrentRoles: string[], arrAllRoles: string[]) {
+    let resultArray: any[] = [];
+
+    arrAllRoles.map(r => {
+      resultArray.push({
+        role: r,
+        isSelected: arrCurrentRoles.includes(r)
+      })
+    });
+
+    return resultArray;
   }
 }

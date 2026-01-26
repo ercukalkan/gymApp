@@ -14,6 +14,7 @@ public class AuthController(
     ILogger<AuthController> _logger,
     UserManager<ApplicationUser> _userManager,
     SignInManager<ApplicationUser> _signInManager,
+    RoleManager<IdentityRole> _roleManager,
     NewUserCreatedEventPublisher _newUserCreatedEventPublisher,
     ITokenService _tokenService) : ControllerBase
 {
@@ -133,6 +134,16 @@ public class AuthController(
         }
 
         return Ok(userDTOs);
+    }
+
+    [HttpGet("roles")]
+    public async Task<ActionResult<IList<string>>> GetRoles()
+    {
+        var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+
+        if (roles != null) return Ok(roles);
+
+        return BadRequest(roles);
     }
 
     [HttpGet("{userId}")]

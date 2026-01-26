@@ -1,0 +1,12 @@
+<mat-dialog-content>
+    <p>Roles</p>
+    <hr>
+
+    <mat-selection-list #roles>
+        @for (object of data; track object.role) {
+            <mat-list-option [value]="object.role" [selected]="object.isSelected">{{ object.role }}</mat-list-option>
+        }
+    </mat-selection-list>
+
+    <button (click)="confirmRoles(roles.selectedOptions.selected)">Confirm</button>
+</mat-dialog-content>

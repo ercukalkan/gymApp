@@ -74,6 +74,14 @@ export class AuthService {
     return this.http.put(`${this.baseUrl}/${userId}`, user);
   }
 
+  deleteUser(userId: any) {
+    return this.http.delete<any>(`${this.baseUrl}/${userId}`);
+  }
+
+  getRoles() {
+    return this.http.get<any>(`${this.baseUrl}/roles`);
+  }
+
   private clearLocalStorage() {
     localStorage.removeItem('access-token');
     localStorage.removeItem('refresh-token');

@@ -49,9 +49,10 @@
                         <span class="property-label">Roles</span>
                         <div class="roles-display">
                             @for (role of this.selectedRoles; track $index) {
-                                <span class="role-chip" (click)="onRoleClick(role)">{{role}}</span>
+                                <span class="role-chip">{{role}}</span>
                             }
                         </div>
+                        <button type="button" class="add-role-btn" (click)="openDialog()">+</button>
                     </div>
                 </div>
 
