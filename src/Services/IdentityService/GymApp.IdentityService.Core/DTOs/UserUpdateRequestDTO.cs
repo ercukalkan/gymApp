@@ -1,5 +1,3 @@
-using GymApp.IdentityService.Data.Entities;
-
 namespace GymApp.IdentityService.Core.DTOs;
 
 public class UserUpdateRequestDTO

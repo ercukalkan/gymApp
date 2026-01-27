@@ -100,4 +100,14 @@ export class AuthUserCardComponent implements OnInit {
 
     return resultArray;
   }
+
+  public isBtnDisabled(): Boolean {
+    let userId; 
+
+    this.authService.authState$.subscribe(state => {
+      userId = state.userId;
+    });
+
+    return userId === this.data.id;
+  }
 }

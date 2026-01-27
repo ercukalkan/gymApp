@@ -52,7 +52,7 @@
                                 <span class="role-chip">{{role}}</span>
                             }
                         </div>
-                        <button type="button" class="add-role-btn" (click)="openDialog()">+</button>
+                        <button type="button" class="add-role-btn" (click)="openDialog()" [disabled]="isBtnDisabled()">+</button>
                     </div>
                 </div>
 

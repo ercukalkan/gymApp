@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+import { JWTPayload } from '../Interfaces/JWTPayload';
 
 @Injectable({
   providedIn: 'root',
@@ -9,11 +11,19 @@ export class AuthService {
   private http = inject(HttpClient);
   private baseUrl: string = 'http://localhost:5000/api/identity/auth';
 
-  private authStateSubject = new BehaviorSubject<{ isAuthenticated: boolean, email: string | null, isAdmin: boolean }>
+  private authStateSubject = new BehaviorSubject<{
+    userId: string | null,
+    isAuthenticated: boolean,
+    firstName: string | null,
+    lastName: string | null,
+    isAdmin: boolean
+  }>
   ({
+    userId: this.getUserIdFromToken(),
     isAuthenticated: !!localStorage.getItem('access-token'),
-    email: localStorage.getItem('email') || null,
-    isAdmin: Boolean(localStorage.getItem('isAdmin')) || false
+    firstName: localStorage.getItem('firstName'),
+    lastName: localStorage.getItem('lastName'),
+    isAdmin: localStorage.getItem('isAdmin') === 'true'
   });
   public authState$ = this.authStateSubject.asObservable();
 
@@ -21,15 +31,15 @@ export class AuthService {
     return this.http.post<any>(`${this.baseUrl}/login`, data)
       .pipe(
         tap(res => {
-          localStorage.setItem('access-token', res.accessToken);
-          localStorage.setItem('refresh-token', res.refreshToken);
-          localStorage.setItem('email', res.user.email);
-          localStorage.setItem('isAdmin', String(res.user.isAdmin));
+          this.updateLocalStorageTokens(res.accessToken, res.refreshToken);
+          this.updateLocalStorageNames(res.user.firstName, res.user.lastName, res.user.isAdmin);
         }),
         tap(res => {
           this.authStateSubject.next({
+            userId: res.user.id,
             isAuthenticated: res.success,
-            email: res.user.email,
+            firstName: res.user.firstName,
+            lastName: res.user.lastName,
             isAdmin: res.user.isAdmin
           });
         }),
@@ -41,15 +51,17 @@ export class AuthService {
   }
 
   logout() {
-    this.clearLocalStorage();
-
     return this.http.post<any>(`${this.baseUrl}/logout`, null).pipe(
       tap(() => {
         this.authStateSubject.next({
+          userId: '',
           isAuthenticated: false,
-          email: null,
+          firstName: null,
+          lastName: null,
           isAdmin: false
         });
+
+        this.clearLocalStorage();
       }),
       catchError(err => {
         console.error('Logout failed: ', err);
@@ -71,7 +83,7 @@ export class AuthService {
   }
 
   updateUser(userId: any, user: any) {
-    return this.http.put(`${this.baseUrl}/${userId}`, user);
+    return this.http.put<any>(`${this.baseUrl}/${userId}`, user);
   }
 
   deleteUser(userId: any) {
@@ -88,9 +100,29 @@ export class AuthService {
     localStorage.removeItem('email');
     localStorage.removeItem('isAdmin');
     this.authStateSubject.next({
+      userId: null,
       isAuthenticated: false,
-      email: null,
+      firstName: null,
+      lastName: null,
       isAdmin: false
     });
+  }
+
+  private updateLocalStorageNames(firstName: string, lastName: string, isAdmin: boolean) {
+    localStorage.setItem('firstName', firstName);
+    localStorage.setItem('lastName', lastName);
+    localStorage.setItem('isAdmin', String(isAdmin));
+  }
+
+  private updateLocalStorageTokens(accessToken: string, refreshToken: string) {
+    localStorage.setItem('access-token', accessToken);
+    localStorage.setItem('refresh-token', refreshToken);
+  }
+
+  private getUserIdFromToken(): string {
+    const token = localStorage.getItem('access-token');
+    if (!token) return '';
+    const decoded = jwtDecode<JWTPayload>(token);
+    return decoded.userId;
   }
 }

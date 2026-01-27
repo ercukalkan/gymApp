@@ -10,7 +10,7 @@ public class UserDTO
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
-    public DateTime? DateOfBirth { get; set; }
+    public string DateOfBirth { get; set; } = string.Empty;
     public IList<string> Roles { get; set; } = [];
     public bool IsAdmin { get; set; } = false;
 
@@ -24,7 +24,7 @@ public class UserDTO
             FirstName = user.FirstName!,
             LastName = user.LastName!,
             PhoneNumber = user.PhoneNumber!,
-            DateOfBirth = user.DateOfBirth,
+            DateOfBirth = user.DateOfBirth.HasValue ? user.DateOfBirth.Value.ToString("dd/MM/yyyy") : string.Empty,
             Roles = roles,
             IsAdmin = isAdmin
         };

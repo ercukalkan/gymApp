@@ -24,6 +24,11 @@
       <td mat-cell *matCellDef="let user"> {{user.lastName}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="dateOfBirth">
+      <th mat-header-cell *matHeaderCellDef> Date of Birth </th>
+      <td mat-cell *matCellDef="let user"> {{user.dateOfBirth}} </td>
+    </ng-container>
+
     <ng-container matColumnDef="phoneNumber">
       <th mat-header-cell *matHeaderCellDef> Phone Number </th>
       <td mat-cell *matCellDef="let user"> {{user.phoneNumber}} </td>

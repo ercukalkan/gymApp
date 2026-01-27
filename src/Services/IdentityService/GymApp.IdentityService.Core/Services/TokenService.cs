@@ -19,15 +19,16 @@ namespace GymApp.IdentityService.Core.Services
 
                 var claims = new List<Claim>
                 {
-                    new(ClaimTypes.NameIdentifier, userId),
-                    new(ClaimTypes.Email, email),
+                    new("userId", userId),
+                    new("email", email),
                     new(ClaimTypes.Name, username),
+                    new("isAdmin", roles.Contains("admin").ToString()),
                     new("jti", Guid.NewGuid().ToString())
                 };
 
                 foreach (var role in roles)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, role));
+                    claims.Add(new Claim("roles", role));
                 }
 
                 var token = new JwtSecurityToken(

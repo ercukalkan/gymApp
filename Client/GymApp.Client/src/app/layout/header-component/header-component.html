@@ -28,7 +28,7 @@
       @if (isAuthenticated) {
         <!-- User Menu -->
         <button matButton [mat-menu-trigger-for]="userMenu" class="ml-2 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200 gap-2">
-          <span class="text-md">{{userEmail}}</span>
+          <span class="text-md">{{fullName}}</span>
           <mat-icon class="text-sm">expand_more</mat-icon>
         </button>
         <mat-menu #userMenu="matMenu" class="auth-menu">

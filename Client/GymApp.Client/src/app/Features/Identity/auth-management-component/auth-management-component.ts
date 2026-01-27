@@ -21,7 +21,7 @@ export class AuthManagementComponent implements OnInit {
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   users: any = [];
-  displayedColumns: string[] = ['username', 'email', 'firstName', 'lastName', 'phoneNumber'];
+  displayedColumns: string[] = ['username', 'email', 'firstName', 'lastName', 'dateOfBirth', 'phoneNumber'];
   readonly dialog = inject(MatDialog);
   selectedUser: any = null;
 
@@ -38,7 +38,10 @@ export class AuthManagementComponent implements OnInit {
         data: this.selectedUser
       });
 
-      dialogRef.afterClosed().subscribe(() => this.loadUsers())
+      dialogRef.afterClosed().subscribe(() => {
+        window.location.reload();
+        this.loadUsers();
+      })
     });
   }
 

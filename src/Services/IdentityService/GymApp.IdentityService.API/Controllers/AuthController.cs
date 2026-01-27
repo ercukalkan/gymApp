@@ -157,7 +157,7 @@ public class AuthController(
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(string id, [FromBody] UserUpdateRequestDTO requestDTO)
+    public async Task<ActionResult<UserDTO>> UpdateUser(string id, [FromBody] UserUpdateRequestDTO requestDTO)
     {
         var existingUser = await _userManager.FindByIdAsync(id);
 
@@ -179,14 +179,29 @@ public class AuthController(
         existingUser.LastName = requestDTO.UserDTO.LastName ?? existingUser.LastName;
         existingUser.Email = requestDTO.UserDTO.Email ?? existingUser.Email;
         existingUser.PhoneNumber = requestDTO.UserDTO.PhoneNumber ?? existingUser.PhoneNumber;
-        existingUser.DateOfBirth = requestDTO.UserDTO.DateOfBirth ?? existingUser.DateOfBirth;
+
+        bool isDTODateConverted = DateTime.TryParseExact(
+            requestDTO.UserDTO.DateOfBirth,
+            "dd/MM/yyyy",
+            null,
+            System.Globalization.DateTimeStyles.None,
+            out var parsedDate
+        );
+
+        existingUser.DateOfBirth = isDTODateConverted ? parsedDate : existingUser.DateOfBirth;
 
         var result = await _userManager.UpdateAsync(existingUser);
+
+        UserDTO updatedDTO = UserDTO.CreateDTOFromUser(
+            existingUser,
+            await _userManager.GetRolesAsync(existingUser),
+            await _userManager.IsInRoleAsync(existingUser, "admin")
+        );
 
         if (result.Succeeded)
         {
             _logger.LogInformation("User {UserId} updated successfully", id);
-            return Ok(existingUser);
+            return Ok(updatedDTO);
         }
 
         return BadRequest(result.Errors);
