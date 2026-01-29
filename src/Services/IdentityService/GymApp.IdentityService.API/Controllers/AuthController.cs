@@ -5,6 +5,7 @@ using GymApp.IdentityService.Core.DTOs;
 using GymApp.IdentityService.API.Features.EventPublishers;
 using GymApp.IdentityService.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GymApp.IdentityService.API.Controllers;
 
@@ -13,7 +14,6 @@ namespace GymApp.IdentityService.API.Controllers;
 public class AuthController(
     ILogger<AuthController> _logger,
     UserManager<ApplicationUser> _userManager,
-    SignInManager<ApplicationUser> _signInManager,
     RoleManager<IdentityRole> _roleManager,
     NewUserCreatedEventPublisher _newUserCreatedEventPublisher,
     ITokenService _tokenService) : ControllerBase
@@ -58,17 +58,23 @@ public class AuthController(
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        var result = await _signInManager.PasswordSignInAsync(user, request.Password, false, lockoutOnFailure: true);
+        if (await _userManager.IsLockedOutAsync(user))
+        {
+            _logger.LogWarning("Login attempt for locked out user: {UserId}", user.Id);
+            return Unauthorized(new { message = "Account locked. Try again later." });
+        }
 
-        if (!result.Succeeded)
+        var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+
+        if (!isPasswordValid)
         {
             _logger.LogWarning("Failed login attempt for user: {UserId}", user.Id);
-
-            if (result.IsLockedOut)
-                return Unauthorized(new { message = "Account locked. Try again later." });
+            await _userManager.AccessFailedAsync(user);
 
             return Unauthorized(new { message = "Invalid credentials" });
         }
+
+        await _userManager.ResetAccessFailedCountAsync(user);
 
         var accessToken = _tokenService.GenerateAccessToken(
             user.Id,
@@ -95,10 +101,9 @@ public class AuthController(
     }
 
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
+    public IActionResult Logout()
     {
-        await _signInManager.SignOutAsync();
-        return Ok();
+        return Ok(new { message = "Logged out successfully" });
     }
 
     [HttpDelete("{id}")]
@@ -156,12 +161,18 @@ public class AuthController(
         return Ok(UserDTO.CreateDTOFromUser(user, await _userManager.GetRolesAsync(user), await _userManager.IsInRoleAsync(user, "admin")));
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult<UserDTO>> UpdateUser(string id, [FromBody] UserUpdateRequestDTO requestDTO)
     {
         var existingUser = await _userManager.FindByIdAsync(id);
 
         if (existingUser == null) return NotFound();
+
+        if (User.FindFirst("userId")?.Value == id)
+        {
+            return BadRequest(new { message = "An admin can not edit his/her own roles." });
+        }
 
         var existingUserRoles = await _userManager.GetRolesAsync(existingUser);
 

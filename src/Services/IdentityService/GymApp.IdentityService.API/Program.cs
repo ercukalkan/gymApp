@@ -33,6 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!)
             ),
             ValidateIssuer = true,
+            ValidIssuer = jwtSettings["Issuer"],
             ValidateAudience = true,
             ValidAudience = jwtSettings["Audience"],
             ValidateLifetime = true,
@@ -44,7 +45,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+builder.Services.AddIdentityCore<ApplicationUser>(options =>
 {
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
@@ -54,7 +55,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.User.RequireUniqueEmail = true;
     // options.SignIn.RequireConfirmedEmail = true;
 })
+.AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<IdentityContext>()
+.AddSignInManager<SignInManager<ApplicationUser>>()
 .AddDefaultTokenProviders();
 
 builder.Services.AddMassTransitConfiguration("localhost", "guest", "guest");

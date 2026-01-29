@@ -83,7 +83,15 @@ export class AuthService {
   }
 
   updateUser(userId: any, user: any) {
-    return this.http.put<any>(`${this.baseUrl}/${userId}`, user);
+    return this.http.put<any>(`${this.baseUrl}/${userId}`, user)
+      .pipe(
+        tap(res => {
+          if (this.getUserIdFromToken() === userId) {
+            localStorage.setItem('firstName', res.firstName);
+            localStorage.setItem('lastName', res.lastName);
+          }
+        })
+      );
   }
 
   deleteUser(userId: any) {
