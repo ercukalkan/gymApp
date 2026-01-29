@@ -97,8 +97,9 @@ export class AuthService {
   private clearLocalStorage() {
     localStorage.removeItem('access-token');
     localStorage.removeItem('refresh-token');
-    localStorage.removeItem('email');
     localStorage.removeItem('isAdmin');
+    localStorage.removeItem('firstName');
+    localStorage.removeItem('lastName');
     this.authStateSubject.next({
       userId: null,
       isAuthenticated: false,
