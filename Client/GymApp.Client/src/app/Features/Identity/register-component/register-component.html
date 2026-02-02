@@ -1,51 +1,149 @@
 <div class="register-container">
-    <div class="register-card">
-        <div class="register-header">
-            <h1>Join Us!</h1>
-            <p>Create your fitness account</p>
-        </div>
-
-        <form class="register-form" (ngSubmit)="onSubmit()" novalidate>
-            <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input type="text" id="firstName" [(ngModel)]="firstName" name="firstName" required>
-            </div>
-
-            <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input type="text" id="lastName" [(ngModel)]="lastName" name="lastName" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" [(ngModel)]="username" name="username" required>
-            </div>
-
-            <div class="form-group">
-                <label for="birthDate">Birth Date</label>
-                <input type="date" id="birthDate" [(ngModel)]="birthDate" name="birthDate" required>
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" [(ngModel)]="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" [(ngModel)]="password" name="password" required>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required>
-            </div>
-
-            <button type="button" class="btn-register" (click)="onSubmit()">Get Started</button>
-        </form>
-
-        <div class="login-link">
-            <p>Already have an account? <a routerLink="/identity/login">Sign in</a></p>
-        </div>
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Join Us!</h1>
+      <p>Create your fitness account</p>
     </div>
+
+    <form class="register-form" #registerForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          id="firstName"
+          [(ngModel)]="firstName"
+          name="firstName"
+          #firstNameModel="ngModel"
+          required
+          minlength="4"
+          maxlength="15"
+        />
+        @if (firstNameModel.invalid && (firstNameModel.dirty || firstNameModel.touched)) {
+          <div class="error-messages">First Name is required (4-15 characters).</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input
+          type="text"
+          id="lastName"
+          [(ngModel)]="lastName"
+          name="lastName"
+          #lastNameModel="ngModel"
+          required
+          minlength="4"
+          maxlength="15"
+        />
+        @if (lastNameModel.invalid && (lastNameModel.dirty || lastNameModel.touched)) {
+          <div class="error-messages">Last Name is required (4-15 characters).</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          [(ngModel)]="username"
+          name="username"
+          #usernameModel="ngModel"
+          required
+          minlength="4"
+          maxlength="15"
+        />
+        @if (usernameModel.invalid && (usernameModel.dirty || usernameModel.touched)) {
+          <div class="error-messages">Username is required (4-15 characters).</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="birthDate">Birth Date</label>
+        <input
+          type="date"
+          id="birthDate"
+          [(ngModel)]="birthDate"
+          name="birthDate"
+          #birthDateModel="ngModel"
+          required
+          [max]="maxDateString"
+        />
+        @if (birthDateModel.invalid && (birthDateModel.dirty || birthDateModel.touched)) {
+          <div class="error-messages">
+            <div>Birth Date is required and must be before {{ maxDateString }}</div>
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          #emailModel="ngModel"
+          required
+        />
+        @if (emailModel.invalid && (emailModel.dirty || emailModel.touched)) {
+          <div class="error-messages">
+            @if (emailModel.errors?.['required']) {
+              <div>Email is required.</div>
+            }
+            @if (emailModel.errors?.['email']) {
+              <div>Invalid email format.</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          #passwordModel="ngModel"
+          required
+        />
+        @if (passwordModel.invalid && (passwordModel.dirty || passwordModel.touched)) {
+          <div class="error-messages">
+            @if (passwordModel.errors?.['required']) {
+              <div>Password is required (6-15 characters).</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          #confirmPasswordModel="ngModel"
+          required
+        />
+        @if (!this.passwordsMatch) {
+          <div class="error-messages">Passwords do not match.</div>
+        }
+      </div>
+
+      <div>
+        @if (validationErrors.length > 0) {
+          @for (vError of validationErrors; track $index) {
+            <div class="error-messages">{{ vError }}</div>
+          }
+        }
+      </div>
+
+      <button type="submit" class="btn-register">Get Started</button>
+    </form>
+
+    <div class="login-link">
+      <p>Already have an account? <a routerLink="/identity/login">Sign in</a></p>
+    </div>
+  </div>
 </div>

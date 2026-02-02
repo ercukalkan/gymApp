@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../Core/Services/auth-service';
 
 @Component({
@@ -20,8 +20,15 @@ export class RegisterComponent {
   password: string = '';
   confirmPassword: string = '';
 
+  // Validation
+  validationErrors: string[] = [];
+  maxDateString: string = new Date().toISOString().split('T')[0];
+  public get passwordsMatch(): boolean {
+    return this.password === this.confirmPassword;
+  }
+
   onSubmit() {
-    if (this.password !== this.confirmPassword) {
+    if (!this.passwordsMatch) {
       console.error('Passwords do not match');
       return;
     }
@@ -33,7 +40,7 @@ export class RegisterComponent {
       DateOfBirth: this.birthDate,
       Email: this.email,
       Password: this.password,
-      Gender: 'Male'
+      Gender: 'Male',
     };
 
     this.authService.register(registerData).subscribe({
@@ -43,7 +50,12 @@ export class RegisterComponent {
       },
       error: (error) => {
         console.error('Registration failed', error);
-      }
+        if (Array.isArray(error)) {
+          this.validationErrors = error;
+        } else {
+          this.validationErrors = ['An unexpected error occurred. Please try again later.'];
+        }
+      },
     });
   }
 }

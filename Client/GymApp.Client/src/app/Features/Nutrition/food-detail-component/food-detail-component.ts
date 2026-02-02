@@ -5,13 +5,10 @@ import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-food-detail-component',
-  imports: [
-    ReactiveFormsModule
-  ],
+  imports: [ReactiveFormsModule],
   templateUrl: './food-detail-component.html',
   styleUrl: './food-detail-component.css',
 })
-  
 export class FoodDetailComponent implements OnInit {
   private foodService = inject(FoodService);
   private route = inject(ActivatedRoute);
@@ -28,7 +25,7 @@ export class FoodDetailComponent implements OnInit {
     caloriesCtrl: new FormControl(this.food?.calories || 0),
     proteinCtrl: new FormControl(this.food?.protein || 0),
     carbsCtrl: new FormControl(this.food?.carbohydrates || 0),
-    fatsCtrl: new FormControl(this.food?.fats || 0)
+    fatsCtrl: new FormControl(this.food?.fats || 0),
   });
 
   ngOnInit(): void {
@@ -44,7 +41,7 @@ export class FoodDetailComponent implements OnInit {
         caloriesCtrl: 0,
         proteinCtrl: 0,
         carbsCtrl: 0,
-        fatsCtrl: 0
+        fatsCtrl: 0,
       });
     }
   }
@@ -56,9 +53,9 @@ export class FoodDetailComponent implements OnInit {
       calories: this.foodForm.value.caloriesCtrl,
       protein: this.foodForm.value.proteinCtrl,
       carbohydrates: this.foodForm.value.carbsCtrl,
-      fats: this.foodForm.value.fatsCtrl
+      fats: this.foodForm.value.fatsCtrl,
     };
-    
+
     if (this.mode === 'add') {
       this.createFood(food);
     } else if (this.mode === 'edit' && this.food) {
@@ -75,20 +72,24 @@ export class FoodDetailComponent implements OnInit {
   }
 
   private createFood(food: any) {
-    this.foodService.addFood(food).subscribe(response => {
+    this.foodService.addFood(food).subscribe((response) => {
       this.routerRedirect();
     });
   }
 
   private updateFood(id: any, food: any) {
-    this.foodService.updateFood(id, food).subscribe(response => {
+    this.foodService.updateFood(id, food).subscribe((response) => {
       this.routerRedirect();
     });
   }
 
   private deleteFood(id: any) {
     // Confirmation dialog
-    if (!confirm(`Are you sure you want to delete "${this.food?.name}"? This action cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${this.food?.name}"? This action cannot be undone.`,
+      )
+    ) {
       return;
     }
 
@@ -102,20 +103,20 @@ export class FoodDetailComponent implements OnInit {
         this.isDeleting = false;
         console.error('Error deleting food:', err);
         alert('Failed to delete food. Please try again.');
-      }
+      },
     });
   }
 
   private loadFoodDetails(id: any) {
-    this.foodService.getFoodById(id).subscribe(data => {
-        this.food = data;
-        this.foodForm.patchValue({
-          nameCtrl: data.name || '',
-          caloriesCtrl: data.calories || 0,
-          proteinCtrl: data.protein || 0,
-          carbsCtrl: data.carbohydrates || 0,
-          fatsCtrl: data.fats || 0
-        });
+    this.foodService.getFoodById(id).subscribe((data) => {
+      this.food = data;
+      this.foodForm.patchValue({
+        nameCtrl: data.name || '',
+        caloriesCtrl: data.calories || 0,
+        proteinCtrl: data.protein || 0,
+        carbsCtrl: data.carbohydrates || 0,
+        fatsCtrl: data.fats || 0,
+      });
       this.cdr.detectChanges();
     });
   }
