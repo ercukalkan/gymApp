@@ -1,33 +1,26 @@
-using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using GymApp.NutritionService.Core.Caching;
-using Microsoft.AspNetCore.Authorization;
+using GymApp.NutritionService.Core.Services;
 
 namespace GymApp.NutritionService.API.Controllers;
-
 [ApiController]
 [Route("api/[controller]")]
-public class FoodController(NutritionContext context, IRedisService redisService) : ControllerBase
+public class FoodController(IFoodService service) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Food>>> GetFoods()
     {
-        var foods = await context.Foods.AsNoTracking().ToListAsync();
+        var foods = await service.GetAllFoodsAsync();
 
-        foods.ForEach(async f => await redisService.SetAsync(f.Id.ToString(), f, TimeSpan.FromSeconds(20)));
-
-        return Ok(await context.Foods.AsNoTracking().ToListAsync());
+        return Ok(foods);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Food>> GetFoodById(Guid id)
     {
-        var food = await context.Foods.FindAsync(id);
+        var food = await service.GetFoodByIdAsync(id);
         if (food == null) return NotFound();
-
-        await redisService.SetAsync("Test Food", food, TimeSpan.FromSeconds(20));
 
         return Ok(food);
     }
@@ -35,8 +28,7 @@ public class FoodController(NutritionContext context, IRedisService redisService
     [HttpPost]
     public async Task<ActionResult<Food>> CreateFood(Food food)
     {
-        context.Foods.Add(food);
-        await context.SaveChangesAsync();
+        await service.AddFoodAsync(food);
 
         return CreatedAtAction(nameof(GetFoodById), new { id = food.Id }, food);
     }
@@ -46,15 +38,13 @@ public class FoodController(NutritionContext context, IRedisService redisService
     {
         if (id != food.Id) return BadRequest();
 
-        context.Entry(food).State = EntityState.Modified;
-
         try
         {
-            await context.SaveChangesAsync();
+            await service.UpdateFoodAsync(food);
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!context.Foods.Any(e => e.Id == id))
+            if (await service.GetFoodByIdAsync(id) == null)
             {
                 return NotFound();
             }
@@ -70,13 +60,10 @@ public class FoodController(NutritionContext context, IRedisService redisService
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteFood(Guid id)
     {
-        var food = await context.Foods.FindAsync(id);
+        var food = await service.GetFoodByIdAsync(id);
         if (food == null) return NotFound();
 
-        context.Foods.Remove(food);
-        await context.SaveChangesAsync();
-
-        await redisService.RemoveAsync("Test Food");
+        await service.DeleteFoodAsync(id);
 
         return NoContent();
     }

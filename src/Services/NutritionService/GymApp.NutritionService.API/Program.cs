@@ -8,6 +8,7 @@ using GymApp.NutritionService.Core.Caching;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using GymApp.NutritionService.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,8 @@ builder.Services.AddRedisConfiguration(
     builder.Configuration.GetValue<string>("Redis:RedisCacheDb") ?? "localhost:6379"
 );
 builder.Services.AddSingleton<IRedisService, RedisService>();
+
+builder.Services.AddScoped<IFoodService, FoodService>();
 
 var app = builder.Build();
 
