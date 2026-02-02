@@ -48,6 +48,18 @@ services:
       - nutrition-network
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+  identity-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: identity-db-mssql
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      ACCEPT_EULA: ${ACCEPT_EULA}
+    ports:
+      - "1434:1433"
+    networks:
+      - identity-network
+    volumes:
+      - identity-db-data:/var/lib/mssql/data
   # api-gateway:
   #   build:
   #     context: .
@@ -66,18 +78,55 @@ services:
   #   environment:
   #     - ASPNETCORE_ENVIRONMENT=Development
   #     - ASPNETCORE_URLS=http://+:8080
-  identity-db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: identity-db-mssql
-    environment:
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
-      ACCEPT_EULA: ${ACCEPT_EULA}
-    ports:
-      - "1434:1433"
-    networks:
-      - identity-network
-    volumes:
-      - identity-db-data:/var/lib/mssql/data
+  # gym-tracking-service:
+  #   build:
+  #     context: .
+  #     dockerfile: src/Services/GymTrackingService/GymApp.GymTrackingService.API/Dockerfile
+  #   container_name: gym-tracking-service
+  #   ports:
+  #     - "8081:8080"
+  #   networks:
+  #     - gym-tracking-network
+  #   depends_on:
+  #     - gym-tracking-db
+  #     - redis
+  #     - rabbitmq
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:8080
+  #     - ConnectionStrings__GymTrackingDatabase=Host=gym-tracking-db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};
+  # identity-service:
+  #   build:
+  #     context: .
+  #     dockerfile: src/Services/IdentityService/GymApp.IdentityService.API/Dockerfile
+  #   container_name: identity-service
+  #   ports:
+  #     - "8082:8080"
+  #   networks:
+  #     - identity-network
+  #   depends_on:
+  #     - identity-db
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:8080
+  #     - ConnectionStrings__IdentityDatabase=Server=identity-db;Database=IdentityDB;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
+  # nutrition-service:
+  #   build:
+  #     context: .
+  #     dockerfile: src/Services/NutritionService/GymApp.NutritionService.API/Dockerfile
+  #   container_name: nutrition-service
+  #   ports:
+  #     - "8083:8080"
+  #   networks:
+  #     - nutrition-network
+  #   depends_on:
+  #     - nutrition-db
+  #     - redis
+  #     - rabbitmq
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:8080
+  #     - ConnectionStrings__NutritionDatabase=Server=nutrition-db;Database=NutritionDB;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
 
 networks:
   nutrition-network:

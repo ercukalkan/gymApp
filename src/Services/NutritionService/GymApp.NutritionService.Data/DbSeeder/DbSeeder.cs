@@ -1,5 +1,6 @@
 using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymApp.NutritionService.Data.DbSeeder;
 
@@ -7,7 +8,7 @@ public class DbSeeder
 {
     public static async Task SeedAsync(NutritionContext context)
     {
-        context.Database.EnsureCreated();
+        await context.Database.MigrateAsync();
 
         if (context.Foods.Any()) return;
 

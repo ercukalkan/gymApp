@@ -11,7 +11,6 @@ namespace GymApp.NutritionService.API.Controllers;
 [Route("api/[controller]")]
 public class FoodController(NutritionContext context, IRedisService redisService) : ControllerBase
 {
-    [Authorize(Roles = "manager")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Food>>> GetFoods()
     {

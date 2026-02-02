@@ -54,7 +54,8 @@ public static class DbSeeder
         }
         catch (Exception ex)
         {
-            var logger = serviceProvider.GetRequiredService<ILogger>();
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger(nameof(DbSeeder));
             logger.LogError(ex, "Error preparing user '{Username}' with role '{Role}'.", username, role);
             throw;
         }
@@ -68,12 +69,20 @@ public static class DbSeeder
 
         if (userCheck == null)
         {
+            var email = $"{username}@test.com";
             userCheck = new ApplicationUser
             {
-                UserName = username
+                UserName = username,
+                Email = email,
+                EmailConfirmed = true
             };
 
-            await userManager.CreateAsync(userCheck, password);
+            var createResult = await userManager.CreateAsync(userCheck, password);
+            if (!createResult.Succeeded)
+            {
+                var errors = string.Join(", ", createResult.Errors.Select(error => error.Description));
+                throw new InvalidOperationException($"Failed to create user '{username}'. Errors: {errors}");
+            }
         }
 
         return userCheck;
@@ -83,19 +92,34 @@ public static class DbSeeder
     {
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+        IdentityResult identityResult;
+
         if (!await roleManager.RoleExistsAsync(roleName))
         {
-            await roleManager.CreateAsync(new IdentityRole(roleName));
+            identityResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+
+            if (!identityResult.Succeeded)
+            {
+                var errors = string.Join(", ", identityResult.Errors.Select(error => error.Description));
+                throw new InvalidOperationException($"Failed to create role '{roleName}'. Errors: {errors}");
+            }
         }
     }
 
     private static async Task AssignRolesToUsersIfNotAssigned(IServiceProvider serviceProvider, ApplicationUser user, string role)
     {
+        ArgumentNullException.ThrowIfNull(user);
+
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         if (!await userManager.IsInRoleAsync(user, role))
         {
-            await userManager.AddToRoleAsync(user, role);
+            var addToRoleResult = await userManager.AddToRoleAsync(user, role);
+            if (!addToRoleResult.Succeeded)
+            {
+                var errors = string.Join(", ", addToRoleResult.Errors.Select(error => error.Description));
+                throw new InvalidOperationException($"Failed to add role '{role}' to user '{user.UserName}'. Errors: {errors}");
+            }
         }
     }
 }
