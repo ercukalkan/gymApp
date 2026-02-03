@@ -9,4 +9,6 @@ public interface IFoodService
     Task AddFoodAsync(Food food);
     Task UpdateFoodAsync(Food food);
     Task DeleteFoodAsync(Guid id);
+    Task<IEnumerable<double>> GetCalories();
+    Task<IEnumerable<string?>> GetNames();
 }

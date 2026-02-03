@@ -52,4 +52,14 @@ public class FoodService(IFoodRepository _repository, IRedisService _redisServic
         await _repository.DeleteAsync(id);
         await _redisService.RemoveAsync(id.ToString());
     }
+
+    public async Task<IEnumerable<double>> GetCalories()
+    {
+        return await _repository.GetCalories();
+    }
+
+    public async Task<IEnumerable<string?>> GetNames()
+    {
+        return await _repository.GetNames();
+    }
 }

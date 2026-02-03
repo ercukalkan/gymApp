@@ -8,6 +8,8 @@ public class Repository<TEntity>(NutritionContext _context) : IRepository<TEntit
 {
     private readonly DbSet<TEntity> _dbSet = _context.Set<TEntity>();
 
+    protected NutritionContext Context => _context;
+
     public async Task<TEntity?> GetByIdAsync(Guid id)
     {
         return await _dbSet.FindAsync(id);

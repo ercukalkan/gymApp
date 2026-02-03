@@ -67,4 +67,16 @@ public class FoodController(IFoodService service) : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("calories")]
+    public async Task<IEnumerable<double>> GetCalories()
+    {
+        return await service.GetCalories();
+    }
+
+    [HttpGet("names")]
+    public async Task<IEnumerable<string?>> GetNames()
+    {
+        return await service.GetNames();
+    }
 }
