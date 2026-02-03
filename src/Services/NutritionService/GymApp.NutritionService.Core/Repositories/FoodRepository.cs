@@ -15,7 +15,7 @@ public class FoodRepository(NutritionContext _context) : Repository<Food>(_conte
         if (minimum.HasValue)
             query = query.Where(c => c >= minimum);
 
-        if (minimum.HasValue)
+        if (maximum.HasValue)
             query = query.Where(c => c <= maximum);
 
         return await query.ToListAsync();
