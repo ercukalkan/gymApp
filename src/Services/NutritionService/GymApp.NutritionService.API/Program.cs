@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using GymApp.NutritionService.Core.Services;
+using GymApp.NutritionService.Core.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,7 @@ builder.Services.AddRedisConfiguration(
 );
 builder.Services.AddSingleton<IRedisService, RedisService>();
 
+builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<IFoodService, FoodService>();
 
 var app = builder.Build();

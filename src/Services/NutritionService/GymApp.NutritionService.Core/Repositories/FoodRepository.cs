@@ -1,4 +1,3 @@
-using GymApp.NutritionService.Core.Caching;
 using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Data.Entities;
 using Microsoft.EntityFrameworkCore;
