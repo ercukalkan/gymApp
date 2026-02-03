@@ -1,7 +1,7 @@
 using GymApp.NutritionService.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using GymApp.NutritionService.Core.Services;
+using GymApp.NutritionService.Core.Services.Interfaces;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]

@@ -10,6 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using GymApp.NutritionService.Core.Services;
 using GymApp.NutritionService.Core.Repositories;
+using GymApp.NutritionService.Core.Services.Interfaces;
+using GymApp.NutritionService.Core.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +61,10 @@ builder.Services.AddSingleton<IRedisService, RedisService>();
 
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IMealRepository, MealRepository>();
+builder.Services.AddScoped<IMealService, MealService>();
+builder.Services.AddScoped<IDietRepository, DietRepository>();
+builder.Services.AddScoped<IDietService, DietService>();
 
 var app = builder.Build();
 

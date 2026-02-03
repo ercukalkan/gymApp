@@ -1,6 +1,7 @@
 using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using GymApp.NutritionService.Core.Repositories.Interfaces;
 
 namespace GymApp.NutritionService.Core.Repositories;
 
