@@ -93,12 +93,12 @@ public class FoodController(IFoodService service) : ControllerBase
     }
 
     [HttpGet("names-calories")]
-    public async Task<IEnumerable<object?>> GetNamesWithCalories(string? startsWith, double? minCalories, double? maxCalories)
+    public async Task<IEnumerable<object?>> GetNamesWithCalories(string? startsWith, string? startsWith2, double? minCalories, double? maxCalories)
     {
         var startsWithSpec = new StartsWithSpecification(startsWith!);
-        var calorieBetweenSpec = new CalorieBetweenSpecification(minCalories, maxCalories);
+        var startsWithSpec2 = new StartsWithSpecification(startsWith2!);
 
-        var combinedSpec = startsWithSpec.And(calorieBetweenSpec);
+        var combinedSpec = startsWithSpec.Or(startsWithSpec2);
 
         return await service.GetNamesAndCalories(combinedSpec);
     }
