@@ -5,7 +5,7 @@ using GymApp.NutritionService.Core.Services.Interfaces;
 
 namespace GymApp.NutritionService.Core.Services;
 
-public class DietService(IDietRepository _repository, IRedisService _redisService) : IDietService
+public class DietService(IRepository<Diet> _repository, IRedisService _redisService) : IDietService
 {
     public async Task<Diet?> GetDietByIdAsync(Guid id)
     {
@@ -15,7 +15,7 @@ public class DietService(IDietRepository _repository, IRedisService _redisServic
             return cachedDiet;
         }
 
-        var diet = await _repository.GetDietByIdAsync(id);
+        var diet = await _repository.GetByIdAsync(id);
         if (diet != null)
         {
             await _redisService.SetAsync(id.ToString(), diet, TimeSpan.FromSeconds(20));
@@ -32,24 +32,24 @@ public class DietService(IDietRepository _repository, IRedisService _redisServic
             return cachedDiets;
         }
 
-        var diets = await _repository.GetAllDietsAsync();
+        var diets = await _repository.GetAllAsync();
         await _redisService.SetAsync("all_diets", diets, TimeSpan.FromSeconds(20));
         return diets;
     }
 
     public async Task AddDietAsync(Diet diet)
     {
-        await _repository.AddDietAsync(diet);
+        await _repository.AddAsync(diet);
     }
 
     public async Task UpdateDietAsync(Diet diet)
     {
-        await _repository.UpdateDietAsync(diet);
+        await _repository.UpdateAsync(diet);
     }
 
     public async Task DeleteDietAsync(Guid id)
     {
-        await _repository.DeleteDietAsync(id);
+        await _repository.DeleteAsync(id);
         await _redisService.RemoveAsync(id.ToString());
     }
 }

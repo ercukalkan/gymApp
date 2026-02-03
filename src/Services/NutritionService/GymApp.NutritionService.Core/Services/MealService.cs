@@ -5,7 +5,7 @@ using GymApp.NutritionService.Core.Services.Interfaces;
 
 namespace GymApp.NutritionService.Core.Services;
 
-public class MealService(IMealRepository _repository, IRedisService _redisService) : IMealService
+public class MealService(IRepository<Meal> _repository, IRedisService _redisService) : IMealService
 {
     public async Task<Meal?> GetMealByIdAsync(Guid id)
     {
@@ -15,7 +15,7 @@ public class MealService(IMealRepository _repository, IRedisService _redisServic
             return cachedMeal;
         }
 
-        var meal = await _repository.GetMealByIdAsync(id);
+        var meal = await _repository.GetByIdAsync(id);
         if (meal != null)
         {
             await _redisService.SetAsync(id.ToString(), meal, TimeSpan.FromSeconds(20));
@@ -32,24 +32,24 @@ public class MealService(IMealRepository _repository, IRedisService _redisServic
             return cachedMeals;
         }
 
-        var meals = await _repository.GetAllMealsAsync();
+        var meals = await _repository.GetAllAsync();
         await _redisService.SetAsync("all_meals", meals, TimeSpan.FromSeconds(20));
         return meals;
     }
 
     public async Task AddMealAsync(Meal meal)
     {
-        await _repository.AddMealAsync(meal);
+        await _repository.AddAsync(meal);
     }
 
     public async Task UpdateMealAsync(Meal meal)
     {
-        await _repository.UpdateMealAsync(meal);
+        await _repository.UpdateAsync(meal);
     }
 
     public async Task DeleteMealAsync(Guid id)
     {
-        await _repository.DeleteMealAsync(id);
+        await _repository.DeleteAsync(id);
         await _redisService.RemoveAsync(id.ToString());
     }
 }

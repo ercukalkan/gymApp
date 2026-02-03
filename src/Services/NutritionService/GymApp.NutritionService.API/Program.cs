@@ -59,12 +59,14 @@ builder.Services.AddRedisConfiguration(
 );
 builder.Services.AddSingleton<IRedisService, RedisService>();
 
-builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+// builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<IFoodService, FoodService>();
-builder.Services.AddScoped<IMealRepository, MealRepository>();
+// builder.Services.AddScoped<IMealRepository, MealRepository>();
 builder.Services.AddScoped<IMealService, MealService>();
-builder.Services.AddScoped<IDietRepository, DietRepository>();
+// builder.Services.AddScoped<IDietRepository, DietRepository>();
 builder.Services.AddScoped<IDietService, DietService>();
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 var app = builder.Build();
 
