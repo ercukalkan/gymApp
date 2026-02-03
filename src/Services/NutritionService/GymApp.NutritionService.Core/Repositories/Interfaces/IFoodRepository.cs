@@ -2,11 +2,7 @@ using GymApp.NutritionService.Data.Entities;
 
 namespace GymApp.NutritionService.Core.Repositories.Interfaces;
 
-public interface IFoodRepository
+public interface IFoodRepository : IRepository<Food>
 {
-    Task<Food?> GetFoodByIdAsync(Guid id);
-    Task<IEnumerable<Food>> GetAllFoodsAsync();
-    Task AddFoodAsync(Food food);
-    Task UpdateFoodAsync(Food food);
-    Task DeleteFoodAsync(Guid id);
+
 }

@@ -1,41 +1,33 @@
 using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Data.Entities;
-using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Core.Repositories.Interfaces;
 
 namespace GymApp.NutritionService.Core.Repositories;
 
-public class FoodRepository(NutritionContext _context) : IFoodRepository
+public class FoodRepository(NutritionContext _context) : Repository<Food>(_context), IFoodRepository
 {
     public async Task<Food?> GetFoodByIdAsync(Guid id)
     {
-        return await _context.Foods.FindAsync(id);
+        return await GetByIdAsync(id);
     }
 
     public async Task<IEnumerable<Food>> GetAllFoodsAsync()
     {
-        return await _context.Foods.ToListAsync();
+        return await GetAllAsync();
     }
 
     public async Task AddFoodAsync(Food food)
     {
-        _context.Foods.Add(food);
-        await _context.SaveChangesAsync();
+        await AddAsync(food);
     }
 
     public async Task UpdateFoodAsync(Food food)
     {
-        _context.Entry(food).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        await UpdateAsync(food);
     }
 
     public async Task DeleteFoodAsync(Guid id)
     {
-        var food = await _context.Foods.FindAsync(id);
-        if (food != null)
-        {
-            _context.Foods.Remove(food);
-            await _context.SaveChangesAsync();
-        }
+        await DeleteAsync(id);
     }
 }
