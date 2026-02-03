@@ -11,4 +11,9 @@ public abstract class Specification<T>
         Func<T, bool> predicate = ToExpression()!.Compile();
         return predicate(entity);
     }
+
+    public Specification<T> And(Specification<T> specification)
+    {
+        return new AndSpecification<T>(this, specification);
+    }
 }
