@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MassTransit.Initializers;
 using GymApp.Shared.Pagination;
 using System.Linq.Expressions;
+using GymApp.Shared.Specification;
 
 namespace GymApp.NutritionService.Core.Repositories;
 
@@ -53,10 +54,10 @@ public class FoodRepository(NutritionContext _context) : Repository<Food>(_conte
         return await Context.Foods.Where(expression).Select(i => i.Name).ToListAsync();
     }
 
-    public async Task<IEnumerable<object?>> GetNamesAndCalories(Expression<Func<Food, bool>> expression)
+    public async Task<IEnumerable<object?>> GetNamesAndCalories(Specification<Food> specification)
     {
         var namesWithCalories = Context.Foods
-            .Where(expression)
+            .Where(specification.Expression!)
             .Select(f => new { f.Name, f.Calories });
 
         return await namesWithCalories.ToListAsync();

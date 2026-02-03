@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Core.Services.Interfaces;
 using GymApp.Shared.Pagination;
 using System.Linq.Expressions;
+using GymApp.Shared.Specification;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
@@ -93,11 +94,12 @@ public class FoodController(IFoodService service) : ControllerBase
     [HttpGet("names-calories")]
     public async Task<IEnumerable<object?>> GetNamesWithCalories(double? minCalories, double? maxCalories, string? startsWith)
     {
-        Expression<Func<Food, bool>> expression = f =>
+        var specification = new Specification<Food>(f =>
             (!minCalories.HasValue || f.Calories >= minCalories) &&
             (!maxCalories.HasValue || f.Calories <= maxCalories) &&
-            (string.IsNullOrEmpty(startsWith) || f.Name!.StartsWith(startsWith));
+            (string.IsNullOrEmpty(startsWith) || f.Name!.StartsWith(startsWith!))
+        );
 
-        return await service.GetNamesAndCalories(expression);
+        return await service.GetNamesAndCalories(specification);
     }
 }
