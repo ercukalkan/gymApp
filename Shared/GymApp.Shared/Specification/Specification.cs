@@ -2,12 +2,13 @@ using System.Linq.Expressions;
 
 namespace GymApp.Shared.Specification;
 
-public class Specification<T>(Expression<Func<T, bool>> expression)
+public abstract class Specification<T>
 {
-    public Expression<Func<T, bool>>? Expression => expression;
+    public abstract Expression<Func<T, bool>>? ToExpression();
 
     public bool IsSatisfiedBy(T entity)
     {
-        return Expression!.Compile().Invoke(entity);
+        Func<T, bool> predicate = ToExpression()!.Compile();
+        return predicate(entity);
     }
 }

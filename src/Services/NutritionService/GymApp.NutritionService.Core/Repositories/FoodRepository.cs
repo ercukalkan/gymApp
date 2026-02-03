@@ -57,7 +57,7 @@ public class FoodRepository(NutritionContext _context) : Repository<Food>(_conte
     public async Task<IEnumerable<object?>> GetNamesAndCalories(Specification<Food> specification)
     {
         var namesWithCalories = Context.Foods
-            .Where(specification.Expression!)
+            .Where(specification.ToExpression()!)
             .Select(f => new { f.Name, f.Calories });
 
         return await namesWithCalories.ToListAsync();
