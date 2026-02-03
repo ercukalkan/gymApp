@@ -5,37 +5,30 @@ using GymApp.NutritionService.Core.Repositories.Interfaces;
 
 namespace GymApp.NutritionService.Core.Repositories;
 
-public class MealRepository(NutritionContext _context) : IMealRepository
+public class MealRepository(NutritionContext _context) : Repository<Meal>(_context), IMealRepository
 {
     public async Task<Meal?> GetMealByIdAsync(Guid id)
     {
-        return await _context.Meals.FindAsync(id);
+        return await GetByIdAsync(id);
     }
 
     public async Task<IEnumerable<Meal>> GetAllMealsAsync()
     {
-        return await _context.Meals.ToListAsync();
+        return await GetAllAsync();
     }
 
     public async Task AddMealAsync(Meal meal)
     {
-        _context.Meals.Add(meal);
-        await _context.SaveChangesAsync();
+        await AddAsync(meal);
     }
 
     public async Task UpdateMealAsync(Meal meal)
     {
-        _context.Entry(meal).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        await UpdateAsync(meal);
     }
 
     public async Task DeleteMealAsync(Guid id)
     {
-        var meal = await _context.Meals.FindAsync(id);
-        if (meal != null)
-        {
-            _context.Meals.Remove(meal);
-            await _context.SaveChangesAsync();
-        }
+        await DeleteAsync(id);
     }
 }

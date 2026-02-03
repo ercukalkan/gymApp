@@ -5,7 +5,7 @@ using GymApp.NutritionService.Core.Services.Interfaces;
 
 namespace GymApp.NutritionService.Core.Services;
 
-public class MealService(IRepository<Meal> _repository, IRedisService _redisService) : IMealService
+public class MealService(IMealRepository _repository, IRedisService _redisService) : IMealService
 {
     public async Task<Meal?> GetMealByIdAsync(Guid id)
     {

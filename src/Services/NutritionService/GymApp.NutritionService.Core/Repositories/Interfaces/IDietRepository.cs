@@ -2,7 +2,7 @@ using GymApp.NutritionService.Data.Entities;
 
 namespace GymApp.NutritionService.Core.Repositories.Interfaces;
 
-public interface IDietRepository
+public interface IDietRepository : IRepository<Diet>
 {
     Task<Diet?> GetDietByIdAsync(Guid id);
     Task<IEnumerable<Diet>> GetAllDietsAsync();
