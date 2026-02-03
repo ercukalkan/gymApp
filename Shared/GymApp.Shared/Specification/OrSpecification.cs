@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace GymApp.Shared.Specification;
 
-public class OrSpecification<T>(Specification<T> left, Specification<T> right) : Specification<T>
+public class OrSpecification<T>(ISpecification<T> left, ISpecification<T> right) : Specification<T>
 {
     public override Expression<Func<T, bool>> ToExpression()
     {
