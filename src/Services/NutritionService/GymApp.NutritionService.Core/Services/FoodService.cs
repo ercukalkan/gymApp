@@ -69,4 +69,9 @@ public class FoodService(IFoodRepository _repository, IRedisService _redisServic
     {
         return await _repository.GetNamesStartsWith(expression);
     }
+
+    public async Task<IEnumerable<object?>> GetNamesAndCalories(Expression<Func<Food, bool>> expression)
+    {
+        return await _repository.GetNamesAndCalories(expression);
+    }
 }

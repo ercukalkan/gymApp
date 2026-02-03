@@ -89,4 +89,15 @@ public class FoodController(IFoodService service) : ControllerBase
 
         return await service.GetNamesStartsWith(expression);
     }
+
+    [HttpGet("names-calories")]
+    public async Task<IEnumerable<object?>> GetNamesWithCalories(double? minCalories, double? maxCalories, string? startsWith)
+    {
+        Expression<Func<Food, bool>> expression = f =>
+            (!minCalories.HasValue || f.Calories >= minCalories) &&
+            (!maxCalories.HasValue || f.Calories <= maxCalories) &&
+            (string.IsNullOrEmpty(startsWith) || f.Name!.StartsWith(startsWith));
+
+        return await service.GetNamesAndCalories(expression);
+    }
 }

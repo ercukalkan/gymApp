@@ -52,4 +52,13 @@ public class FoodRepository(NutritionContext _context) : Repository<Food>(_conte
     {
         return await Context.Foods.Where(expression).Select(i => i.Name).ToListAsync();
     }
+
+    public async Task<IEnumerable<object?>> GetNamesAndCalories(Expression<Func<Food, bool>> expression)
+    {
+        var namesWithCalories = Context.Foods
+            .Where(expression)
+            .Select(f => new { f.Name, f.Calories });
+
+        return await namesWithCalories.ToListAsync();
+    }
 }
