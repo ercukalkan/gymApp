@@ -2,6 +2,7 @@ using GymApp.NutritionService.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Core.Services.Interfaces;
+using GymApp.Shared.Pagination;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
@@ -69,14 +70,14 @@ public class FoodController(IFoodService service) : ControllerBase
     }
 
     [HttpGet("calories")]
-    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort)
+    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort, Pagination pagination)
     {
-        return await service.GetCalories(minimum, maximum, sort);
+        return await service.GetCalories(minimum, maximum, sort, pagination);
     }
 
     [HttpGet("names")]
-    public async Task<IEnumerable<string?>> GetNames(string? sort)
+    public async Task<IEnumerable<string?>> GetNames(string? sort, [FromBody] Pagination pagination)
     {
-        return await service.GetNames(sort);
+        return await service.GetNames(sort, pagination);
     }
 }

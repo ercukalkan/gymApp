@@ -2,6 +2,7 @@ using GymApp.NutritionService.Core.Caching;
 using GymApp.NutritionService.Core.Repositories.Interfaces;
 using GymApp.NutritionService.Data.Entities;
 using GymApp.NutritionService.Core.Services.Interfaces;
+using GymApp.Shared.Pagination;
 
 namespace GymApp.NutritionService.Core.Services;
 
@@ -53,13 +54,13 @@ public class FoodService(IFoodRepository _repository, IRedisService _redisServic
         await _redisService.RemoveAsync(id.ToString());
     }
 
-    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort)
+    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort, Pagination pagination)
     {
-        return await _repository.GetCalories(minimum, maximum, sort);
+        return await _repository.GetCalories(minimum, maximum, sort, pagination);
     }
 
-    public async Task<IEnumerable<string?>> GetNames(string? sort)
+    public async Task<IEnumerable<string?>> GetNames(string? sort, Pagination pagination)
     {
-        return await _repository.GetNames(sort);
+        return await _repository.GetNames(sort, pagination);
     }
 }
