@@ -69,14 +69,14 @@ public class FoodController(IFoodService service) : ControllerBase
     }
 
     [HttpGet("calories")]
-    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum)
+    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort)
     {
-        return await service.GetCalories(minimum, maximum);
+        return await service.GetCalories(minimum, maximum, sort);
     }
 
     [HttpGet("names")]
-    public async Task<IEnumerable<string?>> GetNames()
+    public async Task<IEnumerable<string?>> GetNames(string? sort)
     {
-        return await service.GetNames();
+        return await service.GetNames(sort);
     }
 }

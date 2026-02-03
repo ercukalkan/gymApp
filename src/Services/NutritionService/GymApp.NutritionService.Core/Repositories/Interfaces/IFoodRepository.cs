@@ -4,6 +4,6 @@ namespace GymApp.NutritionService.Core.Repositories.Interfaces;
 
 public interface IFoodRepository : IRepository<Food>
 {
-    Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum);
-    Task<IEnumerable<string?>> GetNames();
+    Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort);
+    Task<IEnumerable<string?>> GetNames(string? sort);
 }

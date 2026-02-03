@@ -53,13 +53,13 @@ public class FoodService(IFoodRepository _repository, IRedisService _redisServic
         await _redisService.RemoveAsync(id.ToString());
     }
 
-    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum)
+    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort)
     {
-        return await _repository.GetCalories(minimum, maximum);
+        return await _repository.GetCalories(minimum, maximum, sort);
     }
 
-    public async Task<IEnumerable<string?>> GetNames()
+    public async Task<IEnumerable<string?>> GetNames(string? sort)
     {
-        return await _repository.GetNames();
+        return await _repository.GetNames(sort);
     }
 }
