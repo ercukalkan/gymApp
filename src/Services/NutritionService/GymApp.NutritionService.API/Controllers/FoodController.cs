@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Core.Services.Interfaces;
 using GymApp.Shared.Pagination;
+using System.Linq.Expressions;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
@@ -79,5 +80,13 @@ public class FoodController(IFoodService service) : ControllerBase
     public async Task<IEnumerable<string?>> GetNames(string? sort, [FromBody] Pagination pagination)
     {
         return await service.GetNames(sort, pagination);
+    }
+
+    [HttpGet("namesStartWith/{character}")]
+    public async Task<IEnumerable<string?>> GetNames(string character)
+    {
+        Expression<Func<Food, bool>> expression = f => f.Name!.StartsWith(character);
+
+        return await service.GetNamesStartsWith(expression);
     }
 }

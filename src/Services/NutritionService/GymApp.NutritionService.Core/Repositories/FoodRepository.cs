@@ -4,6 +4,7 @@ using GymApp.NutritionService.Core.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using MassTransit.Initializers;
 using GymApp.Shared.Pagination;
+using System.Linq.Expressions;
 
 namespace GymApp.NutritionService.Core.Repositories;
 
@@ -45,5 +46,10 @@ public class FoodRepository(NutritionContext _context) : Repository<Food>(_conte
             .Take(pagination.PageSize);
 
         return await query.ToListAsync();
+    }
+
+    public async Task<IEnumerable<string?>> GetNamesStartsWith(Expression<Func<Food, bool>> expression)
+    {
+        return await Context.Foods.Where(expression).Select(i => i.Name).ToListAsync();
     }
 }
