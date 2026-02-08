@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Core.Services.Interfaces;
 using GymApp.Shared.Pagination;
 using System.Linq.Expressions;
-using GymApp.Shared.Specification;
-using GymApp.NutritionService.Core.Specifications.FoodSpecifications;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
@@ -90,16 +88,5 @@ public class FoodController(IFoodService service) : ControllerBase
         Expression<Func<Food, bool>> expression = f => f.Name!.StartsWith(character);
 
         return await service.GetNamesStartsWith(expression);
-    }
-
-    [HttpGet("names-calories")]
-    public async Task<IEnumerable<object?>> GetNamesWithCalories(string? startsWith, string? startsWith2)
-    {
-        var startsWithSpec = new StartsWithSpecification(startsWith!);
-        var startsWithSpec2 = new StartsWithSpecification(startsWith2!);
-
-        var combinedSpec = startsWithSpec.Or(startsWithSpec2);
-
-        return await service.GetNamesAndCalories(combinedSpec);
     }
 }

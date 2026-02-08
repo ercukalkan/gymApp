@@ -4,7 +4,6 @@ using GymApp.NutritionService.Data.Entities;
 using GymApp.NutritionService.Core.Services.Interfaces;
 using GymApp.Shared.Pagination;
 using System.Linq.Expressions;
-using GymApp.Shared.Specification;
 
 namespace GymApp.NutritionService.Core.Services;
 
@@ -69,10 +68,5 @@ public class FoodService(IFoodRepository _repository, IRedisService _redisServic
     public async Task<IEnumerable<string?>> GetNamesStartsWith(Expression<Func<Food, bool>> expression)
     {
         return await _repository.GetNamesStartsWith(expression);
-    }
-
-    public async Task<IEnumerable<object?>> GetNamesAndCalories(Specification<Food> specification)
-    {
-        return await _repository.GetNamesAndCalories(specification);
     }
 }
