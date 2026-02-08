@@ -4,11 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Core.Services.Interfaces;
 using GymApp.Shared.Pagination;
 using System.Linq.Expressions;
+using GymApp.NutritionService.Data.Context;
+using GymApp.NutritionService.Core.Specifications.FoodSpecifications;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class FoodController(IFoodService service) : ControllerBase
+public class FoodController(IFoodService service, NutritionContext _context) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Food>>> GetFoods()
@@ -88,5 +90,16 @@ public class FoodController(IFoodService service) : ControllerBase
         Expression<Func<Food, bool>> expression = f => f.Name!.StartsWith(character);
 
         return await service.GetNamesStartsWith(expression);
+    }
+
+    [HttpGet("dummy")]
+    public async Task<IEnumerable<object>> GetDummy(double value)
+    {
+        var spec = new CalorieGreaterThanSpecification(value);
+
+        return await _context.Foods
+            .Where(spec.Criteria!)
+            .Select(f => new { f.Name, f.Calories })
+            .ToListAsync();
     }
 }
