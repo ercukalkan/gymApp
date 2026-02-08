@@ -6,6 +6,8 @@ using GymApp.Shared.Pagination;
 using System.Linq.Expressions;
 using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Core.Specifications.FoodSpecifications;
+using GymApp.NutritionService.Core.Specifications;
+using GymApp.Shared.Specification;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
@@ -101,5 +103,13 @@ public class FoodController(IFoodService service, NutritionContext _context) : C
             .Where(spec.Criteria!)
             .Select(f => new { f.Name, f.Calories })
             .ToListAsync();
+    }
+
+    [HttpGet("dummy2")]
+    public async Task<IEnumerable<Food>> GetDummy2(string? sort)
+    {
+        var spec = new DummyPagingSpecification(sort);
+
+        return await SpecificationEvaluator<Food>.GetQuery(_context.Foods, spec).ToListAsync();
     }
 }
