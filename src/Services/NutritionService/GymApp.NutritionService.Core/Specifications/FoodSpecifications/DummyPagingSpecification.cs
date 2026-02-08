@@ -5,7 +5,7 @@ namespace GymApp.NutritionService.Core.Specifications;
 
 public class DummyPagingSpecification : GenericSpecification<Food>
 {
-    public DummyPagingSpecification(string? sort) : base()
+    public DummyPagingSpecification(string? sort, int? pageNumber, int? pageSize) : base()
     {
         switch (sort)
         {
@@ -19,5 +19,7 @@ public class DummyPagingSpecification : GenericSpecification<Food>
                 AddOrderBy(f => f.Name!);
                 break;
         }
+
+        AddPaging((pageNumber - 1) * pageSize, pageSize);
     }
 }

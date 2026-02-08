@@ -106,9 +106,9 @@ public class FoodController(IFoodService service, NutritionContext _context) : C
     }
 
     [HttpGet("dummy2")]
-    public async Task<IEnumerable<Food>> GetDummy2(string? sort)
+    public async Task<IEnumerable<Food>> GetDummy2(string? sort, int? pageNumber, int? pageSize)
     {
-        var spec = new DummyPagingSpecification(sort);
+        var spec = new DummyPagingSpecification(sort, pageNumber, pageSize);
 
         return await SpecificationEvaluator<Food>.GetQuery(_context.Foods, spec).ToListAsync();
     }

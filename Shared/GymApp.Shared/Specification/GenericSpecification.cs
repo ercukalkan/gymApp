@@ -18,13 +18,22 @@ public class GenericSpecification<T> : ISpecification<T>
     public Expression<Func<T, object>>? OrderBy { get; set; }
     public Expression<Func<T, object>>? OrderByDesc { get; set; }
 
-    public void AddOrderBy(Expression<Func<T, object>> orderBy)
+    protected void AddOrderBy(Expression<Func<T, object>> orderBy)
     {
         OrderBy = orderBy;
     }
 
-    public void AddOrderByDesc(Expression<Func<T, object>> orderByDesc)
+    protected void AddOrderByDesc(Expression<Func<T, object>> orderByDesc)
     {
         OrderByDesc = orderByDesc;
+    }
+
+    public int? Skip { get; protected set; }
+    public int? Take { get; protected set; }
+
+    protected void AddPaging(int? skip, int? take)
+    {
+        Skip = skip;
+        Take = take;
     }
 }
