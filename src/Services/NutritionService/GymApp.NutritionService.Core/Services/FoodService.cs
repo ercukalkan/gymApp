@@ -55,14 +55,14 @@ public class FoodService(IFoodRepository _repository, IRedisService _redisServic
         await _redisService.RemoveAsync(id.ToString());
     }
 
-    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort, Pagination pagination)
+    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, PaginationParams pagination)
     {
-        return await _repository.GetCalories(minimum, maximum, sort, pagination);
+        return await _repository.GetCalories(minimum, maximum, pagination);
     }
 
-    public async Task<IEnumerable<string?>> GetNames(string? sort, Pagination pagination)
+    public async Task<IEnumerable<string?>> GetNames(PaginationParams pagination)
     {
-        return await _repository.GetNames(sort, pagination);
+        return await _repository.GetNames(pagination);
     }
 
     public async Task<IEnumerable<string?>> GetNamesStartsWith(Expression<Func<Food, bool>> expression)

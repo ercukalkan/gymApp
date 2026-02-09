@@ -11,7 +11,7 @@ public interface IFoodService
     Task AddFoodAsync(Food food);
     Task UpdateFoodAsync(Food food);
     Task DeleteFoodAsync(Guid id);
-    Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort, Pagination pagination);
-    Task<IEnumerable<string?>> GetNames(string? sort, Pagination pagination);
+    Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, PaginationParams pagination);
+    Task<IEnumerable<string?>> GetNames(PaginationParams pagination);
     Task<IEnumerable<string?>> GetNamesStartsWith(Expression<Func<Food, bool>> expression);
 }

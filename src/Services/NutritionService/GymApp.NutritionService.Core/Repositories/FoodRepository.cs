@@ -10,7 +10,7 @@ namespace GymApp.NutritionService.Core.Repositories;
 
 public class FoodRepository(NutritionContext _context) : Repository<Food>(_context), IFoodRepository
 {
-    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort, Pagination pagination)
+    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, PaginationParams pagination)
     {
         var query = Context.Foods.Select(f => f.Calories);
 
@@ -20,9 +20,9 @@ public class FoodRepository(NutritionContext _context) : Repository<Food>(_conte
         if (maximum.HasValue)
             query = query.Where(c => c <= maximum);
 
-        if (sort == "asc")
+        if (pagination.Sort == "asc")
             query = query.OrderBy(c => c);
-        else if (sort == "desc")
+        else if (pagination.Sort == "desc")
             query = query.OrderByDescending(c => c);
 
         query = query
@@ -32,13 +32,13 @@ public class FoodRepository(NutritionContext _context) : Repository<Food>(_conte
         return await query.ToListAsync();
     }
 
-    public async Task<IEnumerable<string?>> GetNames(string? sort, Pagination pagination)
+    public async Task<IEnumerable<string?>> GetNames(PaginationParams pagination)
     {
         var query = Context.Foods.Select(f => f.Name);
 
-        if (sort == "asc")
+        if (pagination.Sort == "asc")
             query = query.OrderBy(f => f);
-        else if (sort == "desc")
+        else if (pagination.Sort == "desc")
             query = query.OrderByDescending(f => f);
 
         query = query

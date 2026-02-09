@@ -28,11 +28,13 @@ public class GenericSpecification<T> : ISpecification<T>
         OrderByDesc = orderByDesc;
     }
 
-    public int? Skip { get; protected set; }
-    public int? Take { get; protected set; }
+    public bool IsPagingEnabled { get; set; }
+    public int Skip { get; protected set; }
+    public int Take { get; protected set; }
 
-    protected void AddPaging(int? skip, int? take)
+    protected void AddPaging(int skip, int take)
     {
+        IsPagingEnabled = true;
         Skip = skip;
         Take = take;
     }

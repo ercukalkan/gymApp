@@ -1,13 +1,15 @@
 using GymApp.NutritionService.Data.Entities;
 using GymApp.Shared.Specification;
 
-namespace GymApp.NutritionService.Core.Specifications;
+namespace GymApp.NutritionService.Core.Specifications.FoodSpecifications;
 
 public class DummyPagingSpecification : GenericSpecification<Food>
 {
-    public DummyPagingSpecification(string? sort, int? pageNumber, int? pageSize) : base()
+    public DummyPagingSpecification(FoodSpecificationParameters specParams) : base()
     {
-        switch (sort)
+        AddPaging((specParams.PageNumber - 1) * specParams.PageSize, specParams.PageSize);
+
+        switch (specParams.Sort)
         {
             case "calories":
                 AddOrderBy(f => f.Calories);
@@ -19,7 +21,5 @@ public class DummyPagingSpecification : GenericSpecification<Food>
                 AddOrderBy(f => f.Name!);
                 break;
         }
-
-        AddPaging((pageNumber - 1) * pageSize, pageSize);
     }
 }

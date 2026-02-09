@@ -14,11 +14,8 @@ public static class SpecificationEvaluator<T>
         else if (spec.OrderByDesc != null)
             query = query.OrderByDescending(spec.OrderByDesc);
 
-        if (spec.Skip.HasValue)
-            query = query.Skip(spec.Skip.Value);
-
-        if (spec.Take.HasValue)
-            query = query.Take(spec.Take.Value);
+        if (spec.IsPagingEnabled)
+            query = query.Skip(spec.Skip).Take(spec.Take);
 
         return query;
     }

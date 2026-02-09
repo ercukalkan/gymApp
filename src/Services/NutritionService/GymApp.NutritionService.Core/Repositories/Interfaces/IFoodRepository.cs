@@ -6,7 +6,7 @@ namespace GymApp.NutritionService.Core.Repositories.Interfaces;
 
 public interface IFoodRepository : IRepository<Food>
 {
-    Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort, Pagination pagination);
-    Task<IEnumerable<string?>> GetNames(string? sort, Pagination pagination);
+    Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, PaginationParams pagination);
+    Task<IEnumerable<string?>> GetNames(PaginationParams pagination);
     Task<IEnumerable<string?>> GetNamesStartsWith(Expression<Func<Food, bool>> expression);
 }

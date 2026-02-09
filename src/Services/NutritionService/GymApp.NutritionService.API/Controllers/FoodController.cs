@@ -6,8 +6,8 @@ using GymApp.Shared.Pagination;
 using System.Linq.Expressions;
 using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Core.Specifications.FoodSpecifications;
-using GymApp.NutritionService.Core.Specifications;
 using GymApp.Shared.Specification;
+using GymApp.NutritionService.Core.Specifications;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
@@ -75,15 +75,15 @@ public class FoodController(IFoodService service, NutritionContext _context) : C
     }
 
     [HttpGet("calories")]
-    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, string? sort, Pagination pagination)
+    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, PaginationParams paginationParams)
     {
-        return await service.GetCalories(minimum, maximum, sort, pagination);
+        return await service.GetCalories(minimum, maximum, paginationParams);
     }
 
     [HttpGet("names")]
-    public async Task<IEnumerable<string?>> GetNames(string? sort, [FromBody] Pagination pagination)
+    public async Task<IEnumerable<string?>> GetNames([FromBody] PaginationParams paginationParams)
     {
-        return await service.GetNames(sort, pagination);
+        return await service.GetNames(paginationParams);
     }
 
     [HttpGet("namesStartWith/{character}")]
@@ -106,10 +106,14 @@ public class FoodController(IFoodService service, NutritionContext _context) : C
     }
 
     [HttpGet("dummy2")]
-    public async Task<IEnumerable<Food>> GetDummy2(string? sort, int? pageNumber, int? pageSize)
+    public async Task<Pagination<Food>> GetDummy2([FromQuery] FoodSpecificationParameters paginationParams)
     {
-        var spec = new DummyPagingSpecification(sort, pageNumber, pageSize);
+        DummyPagingSpecification spec = new(paginationParams);
 
-        return await SpecificationEvaluator<Food>.GetQuery(_context.Foods, spec).ToListAsync();
+        var source = await SpecificationEvaluator<Food>.GetQuery(_context.Foods, spec).ToListAsync();
+
+        Pagination<Food> pagination = new(paginationParams.PageNumber, paginationParams.PageSize, source.Count, source.AsQueryable());
+
+        return pagination;
     }
 }
