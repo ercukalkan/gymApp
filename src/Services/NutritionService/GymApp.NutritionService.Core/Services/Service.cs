@@ -6,14 +6,14 @@ namespace GymApp.NutritionService.Core.Services;
 
 public class Service<T>(IRepository<T> repository) : IService<T> where T : class
 {
-    public Task<T> CreateAsync(T entity)
+    public async Task CreateAsync(T entity)
     {
-        throw new NotImplementedException();
+        await repository.AddAsync(entity);
     }
 
-    public Task<bool> DeleteAsync(string id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        await repository.DeleteAsync(id);
     }
 
     public async Task<IReadOnlyList<T>> GetAllAsync(ISpecification<T> spec)
@@ -26,13 +26,13 @@ public class Service<T>(IRepository<T> repository) : IService<T> where T : class
         return await repository.CountAsync(spec);
     }
 
-    public Task<T> GetByIdAsync(string id)
+    public async Task<T?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await repository.GetByIdAsync(id);
     }
 
-    public Task<T> UpdateAsync(string id, T entity)
+    public async Task UpdateAsync(T entity)
     {
-        throw new NotImplementedException();
+        await repository.UpdateAsync(entity);
     }
 }

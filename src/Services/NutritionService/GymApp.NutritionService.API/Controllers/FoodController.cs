@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Core.Services.Interfaces;
 using GymApp.Shared.Pagination;
-using System.Linq.Expressions;
-using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Core.Specifications.FoodSpecifications;
-using GymApp.Shared.Specification;
 using GymApp.NutritionService.Core.Specifications;
 
 namespace GymApp.NutritionService.API.Controllers;
@@ -25,7 +22,7 @@ public class FoodController(IFoodService service) : BaseController
     [HttpGet("{id}")]
     public async Task<ActionResult<Food>> GetFoodById(Guid id)
     {
-        var food = await service.GetFoodByIdAsync(id);
+        var food = await service.GetByIdAsync(id);
         if (food == null) return NotFound();
 
         return Ok(food);
@@ -34,7 +31,7 @@ public class FoodController(IFoodService service) : BaseController
     [HttpPost]
     public async Task<ActionResult<Food>> CreateFood(Food food)
     {
-        await service.AddFoodAsync(food);
+        await service.CreateAsync(food);
 
         return CreatedAtAction(nameof(GetFoodById), new { id = food.Id }, food);
     }
@@ -46,11 +43,11 @@ public class FoodController(IFoodService service) : BaseController
 
         try
         {
-            await service.UpdateFoodAsync(food);
+            await service.UpdateAsync(food);
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (await service.GetFoodByIdAsync(id) == null)
+            if (await service.GetByIdAsync(id) == null)
             {
                 return NotFound();
             }
@@ -66,31 +63,11 @@ public class FoodController(IFoodService service) : BaseController
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteFood(Guid id)
     {
-        var food = await service.GetFoodByIdAsync(id);
+        var food = await service.GetByIdAsync(id);
         if (food == null) return NotFound();
 
-        await service.DeleteFoodAsync(id);
+        await service.DeleteAsync(id);
 
         return NoContent();
-    }
-
-    [HttpGet("calories")]
-    public async Task<IEnumerable<double>> GetCalories(double? minimum, double? maximum, PaginationParams paginationParams)
-    {
-        return await service.GetCalories(minimum, maximum, paginationParams);
-    }
-
-    [HttpGet("names")]
-    public async Task<IEnumerable<string?>> GetNames([FromBody] PaginationParams paginationParams)
-    {
-        return await service.GetNames(paginationParams);
-    }
-
-    [HttpGet("namesStartWith/{character}")]
-    public async Task<IEnumerable<string?>> GetNames(string character)
-    {
-        Expression<Func<Food, bool>> expression = f => f.Name!.StartsWith(character);
-
-        return await service.GetNamesStartsWith(expression);
     }
 }
