@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GymApp.NutritionService.API.Controllers;
 
-public class BaseController<T> : ControllerBase where T : class
+public class BaseController : ControllerBase
 {
-    public async Task<Pagination<T>> GetAllAsync(IService<T> service, ISpecification<T> spec, int PageNumber, int PageSize)
+    protected async Task<ActionResult<Pagination<T>>> GetAllAsync<T>(IService<T> service, ISpecification<T> spec, int PageNumber, int PageSize) where T : class
     {
         var source = await service.GetAllAsync(spec);
         var count = await service.CountAsync(spec);
 
-        return new Pagination<T>(PageNumber, PageSize, count, source);
+        return Ok(new Pagination<T>(PageNumber, PageSize, count, source));
     }
 }

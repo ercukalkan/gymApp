@@ -8,14 +8,6 @@ namespace GymApp.NutritionService.API.Controllers;
 [Route("api/[controller]")]
 public class DietController(IDietService service) : ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Diet>>> GetDiets()
-    {
-        var diets = await service.GetAllDietsAsync();
-
-        return Ok(diets);
-    }
-
     [HttpGet("{id}")]
     public async Task<ActionResult<Diet>> GetDietById(Guid id)
     {

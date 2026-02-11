@@ -12,14 +12,14 @@ using GymApp.NutritionService.Core.Specifications;
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class FoodController(IFoodService service, NutritionContext _context) : ControllerBase
+public class FoodController(IFoodService service) : BaseController
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Food>>> GetFoods()
+    public async Task<ActionResult<Pagination<Food>>> GetFoods([FromQuery] FoodSpecificationParameters parameters)
     {
-        var foods = await service.GetAllFoodsAsync();
+        var spec = new DummyPagingSpecification(parameters);
 
-        return Ok(foods);
+        return await GetAllAsync<Food>(service, spec, parameters.PageNumber, parameters.PageSize);
     }
 
     [HttpGet("{id}")]
@@ -92,28 +92,5 @@ public class FoodController(IFoodService service, NutritionContext _context) : C
         Expression<Func<Food, bool>> expression = f => f.Name!.StartsWith(character);
 
         return await service.GetNamesStartsWith(expression);
-    }
-
-    [HttpGet("dummy")]
-    public async Task<IEnumerable<object>> GetDummy(double value)
-    {
-        var spec = new CalorieGreaterThanSpecification(value);
-
-        return await _context.Foods
-            .Where(spec.Criteria!)
-            .Select(f => new { f.Name, f.Calories })
-            .ToListAsync();
-    }
-
-    [HttpGet("dummy2")]
-    public async Task<Pagination<Food>> GetDummy2([FromQuery] FoodSpecificationParameters paginationParams)
-    {
-        DummyPagingSpecification spec = new(paginationParams);
-
-        var source = await SpecificationEvaluator<Food>.GetQuery(_context.Foods, spec).ToListAsync();
-
-        Pagination<Food> pagination = new(paginationParams.PageNumber, paginationParams.PageSize, source.Count, source.AsQueryable());
-
-        return pagination;
     }
 }

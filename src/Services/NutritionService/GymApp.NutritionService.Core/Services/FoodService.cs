@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace GymApp.NutritionService.Core.Services;
 
-public class FoodService(IFoodRepository _repository, IRedisService _redisService) : IFoodService
+public class FoodService(IFoodRepository _repository, IRedisService _redisService) : Service<Food>(_repository), IFoodService
 {
     public async Task<Food?> GetFoodByIdAsync(Guid id)
     {
@@ -24,19 +24,6 @@ public class FoodService(IFoodRepository _repository, IRedisService _redisServic
         }
 
         return food;
-    }
-
-    public async Task<IEnumerable<Food>> GetAllFoodsAsync()
-    {
-        var cachedFoods = await _redisService.GetAsync<IEnumerable<Food>>("all_foods");
-        if (cachedFoods != null)
-        {
-            return cachedFoods;
-        }
-
-        var foods = await _repository.GetAllAsync();
-        await _redisService.SetAsync("all_foods", foods, TimeSpan.FromSeconds(20));
-        return foods;
     }
 
     public async Task AddFoodAsync(Food food)

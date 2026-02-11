@@ -24,19 +24,6 @@ public class MealService(IMealRepository _repository, IRedisService _redisServic
         return meal;
     }
 
-    public async Task<IEnumerable<Meal>> GetAllMealsAsync()
-    {
-        var cachedMeals = await _redisService.GetAsync<IEnumerable<Meal>>("all_meals");
-        if (cachedMeals != null)
-        {
-            return cachedMeals;
-        }
-
-        var meals = await _repository.GetAllAsync();
-        await _redisService.SetAsync("all_meals", meals, TimeSpan.FromSeconds(20));
-        return meals;
-    }
-
     public async Task AddMealAsync(Meal meal)
     {
         await _repository.AddAsync(meal);

@@ -4,10 +4,9 @@ using GymApp.Shared.Pagination;
 
 namespace GymApp.NutritionService.Core.Services.Interfaces;
 
-public interface IFoodService
+public interface IFoodService : IService<Food>
 {
     Task<Food?> GetFoodByIdAsync(Guid id);
-    Task<IEnumerable<Food>> GetAllFoodsAsync();
     Task AddFoodAsync(Food food);
     Task UpdateFoodAsync(Food food);
     Task DeleteFoodAsync(Guid id);

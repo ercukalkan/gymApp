@@ -24,19 +24,6 @@ public class DietService(IDietRepository _repository, IRedisService _redisServic
         return diet;
     }
 
-    public async Task<IEnumerable<Diet>> GetAllDietsAsync()
-    {
-        var cachedDiets = await _redisService.GetAsync<IEnumerable<Diet>>("all_diets");
-        if (cachedDiets != null)
-        {
-            return cachedDiets;
-        }
-
-        var diets = await _repository.GetAllAsync();
-        await _redisService.SetAsync("all_diets", diets, TimeSpan.FromSeconds(20));
-        return diets;
-    }
-
     public async Task AddDietAsync(Diet diet)
     {
         await _repository.AddAsync(diet);
