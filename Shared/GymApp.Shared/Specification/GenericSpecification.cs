@@ -15,6 +15,17 @@ public class GenericSpecification<T> : ISpecification<T>
     }
 
     public Expression<Func<T, bool>>? Criteria { get; set; }
+
+    public IQueryable<T> ApplyWhereCriteria(IQueryable<T> query)
+    {
+        if (Criteria != null)
+        {
+            query = query.Where(Criteria);
+        }
+
+        return query;
+    }
+
     public Expression<Func<T, object>>? OrderBy { get; set; }
     public Expression<Func<T, object>>? OrderByDesc { get; set; }
 

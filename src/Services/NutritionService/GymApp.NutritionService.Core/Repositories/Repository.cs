@@ -1,5 +1,6 @@
 using GymApp.NutritionService.Core.Repositories.Interfaces;
 using GymApp.NutritionService.Data.Context;
+using GymApp.Shared.Specification;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymApp.NutritionService.Core.Repositories;
@@ -15,9 +16,18 @@ public class Repository<TEntity>(NutritionContext _context) : IRepository<TEntit
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
+    public async Task<IReadOnlyList<TEntity>> GetAllAsync(ISpecification<TEntity> spec)
     {
-        return await _dbSet.ToListAsync();
+        var source = SpecificationEvaluator<TEntity>.GetQuery(_dbSet, spec);
+
+        return await source.ToListAsync();
+    }
+
+    public async Task<int> CountAsync(ISpecification<TEntity> spec)
+    {
+        var query = spec.ApplyWhereCriteria(_dbSet);
+
+        return await query.CountAsync();
     }
 
     public async Task AddAsync(TEntity entity)
