@@ -1,13 +1,10 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using GymApp.NutritionService.Data.Entities.JunctionEntities;
 
 namespace GymApp.NutritionService.Data.Entities;
 
-public class Diet
+public class Diet : BaseEntity
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
     [MaxLength(50)]
     public string? Name { get; set; }
     public double Calories => DietMeals!.Sum(dm => dm.Meal!.Calories);
