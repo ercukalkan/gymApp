@@ -41,6 +41,7 @@ export class RegisterComponent {
       Email: this.email,
       Password: this.password,
       Gender: 'Male',
+      ConfirmPassword: this.confirmPassword,
     };
 
     this.authService.register(registerData).subscribe({

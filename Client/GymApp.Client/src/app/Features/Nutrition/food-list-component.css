@@ -1,13 +1,21 @@
-/* Host component grid - full width layout */
+/* Host component layout */
 :host {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
   padding: 1.5rem;
   width: 100%;
   position: relative;
   max-width: none;
   margin: 0;
+  min-height: 100%;
+}
+
+/* Food items grid */
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  flex: 1 1 auto;
 }
 
 /* Add food button - bottom right */
@@ -60,21 +68,51 @@
   opacity: 0.5;
 }
 
+/* Paginator placement */
+.paginator-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+.paginator-row mat-paginator {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  padding: 0.25rem 0.5rem;
+}
+
 /* Responsive: adjust for tablets */
 @media (max-width: 768px) {
   :host {
+    padding: 1.25rem;
+  }
+
+  .food-grid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1.25rem;
-    padding: 1.25rem;
+  }
+
+  .paginator-row {
+    justify-content: center;
   }
 }
 
 /* Responsive: stack on small screens */
 @media (max-width: 640px) {
   :host {
-    grid-template-columns: 1fr;
-    gap: 1rem;
     padding: 1rem;
     max-width: 100%;
+  }
+
+  .food-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .paginator-row {
+    padding-top: 1rem;
   }
 }

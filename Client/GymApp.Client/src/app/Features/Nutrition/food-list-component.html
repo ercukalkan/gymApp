@@ -1,14 +1,28 @@
-@if (foods && foods.length > 0) {
-    @for (food of foods; track food.id) {
-        <app-food-item-component [food]="food"></app-food-item-component>
+<div class="food-grid">
+  @if (data && data.source.length > 0) {
+    @for (food of data.source; track food.id) {
+      <app-food-item-component [food]="food"></app-food-item-component>
     }
-} @else {
+  } @else {
     <div class="empty-state">
-        <div class="empty-state-icon">📋</div>
-        <p>No food items available.</p>
+      <div class="empty-state-icon">📋</div>
+      <p>No food items available.</p>
     </div>
-}
+  }
+</div>
+
+<div class="paginator-row">
+  <mat-paginator
+    [length]="data.total"
+    [pageSize]="pagingParams.pageSize"
+    [pageSizeOptions]="[3, 5, 10]"
+    [showFirstLastButtons]="true"
+    aria-label="Select page"
+    (page)="handlePaginatorEvent($event)"
+  >
+  </mat-paginator>
+</div>
 
 <button class="add-food-button" routerLink="/nutrition/food/add" title="Add new food">
-    <span class="button-icon">+</span>
+  <span class="button-icon">+</span>
 </button>
