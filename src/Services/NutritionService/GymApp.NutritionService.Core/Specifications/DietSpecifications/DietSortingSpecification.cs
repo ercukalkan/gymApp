@@ -9,13 +9,13 @@ public class DietSortingSpecification : PagingSpecification<Diet>
         switch (paginationParams.Sort)
         {
             case "calories":
-                AddOrderBy(f => f.Calories);
+                AddOrderBy(d => d.Calories);
                 break;
             case "protein":
-                AddOrderBy(f => f.Protein);
+                AddOrderBy(d => d.Protein);
                 break;
             default:
-                AddOrderBy(f => f.Name!);
+                AddOrderBy(d => d.Name!);
                 break;
         }
     }
