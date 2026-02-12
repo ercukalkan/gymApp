@@ -2,16 +2,27 @@ using GymApp.NutritionService.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Core.Services.Interfaces;
+using GymApp.NutritionService.Core.Specifications;
+using GymApp.NutritionService.Core.Specifications.DietSpecifications;
+using GymApp.Shared.Pagination;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class DietController(IDietService service) : ControllerBase
+public class DietController(IDietService service) : BaseController
 {
+    [HttpGet]
+    public async Task<ActionResult<Pagination<Diet>>> GetDiets([FromQuery] DietSpecificationParameters parameters)
+    {
+        var spec = new DietSortingSpecification(parameters);
+
+        return await GetAllAsync<Diet>(service, spec, parameters.PageNumber, parameters.PageSize);
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Diet>> GetDietById(Guid id)
     {
-        var diet = await service.GetDietByIdAsync(id);
+        var diet = await service.GetByIdAsync(id);
         if (diet == null) return NotFound();
 
         return Ok(diet);
@@ -20,7 +31,7 @@ public class DietController(IDietService service) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Diet>> CreateDiet(Diet diet)
     {
-        await service.AddDietAsync(diet);
+        await service.CreateAsync(diet);
 
         return CreatedAtAction(nameof(GetDietById), new { id = diet.Id }, diet);
     }
@@ -32,11 +43,11 @@ public class DietController(IDietService service) : ControllerBase
 
         try
         {
-            await service.UpdateDietAsync(diet);
+            await service.UpdateAsync(diet);
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (await service.GetDietByIdAsync(id) == null)
+            if (await service.GetByIdAsync(id) == null)
             {
                 return NotFound();
             }
@@ -52,10 +63,10 @@ public class DietController(IDietService service) : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDiet(Guid id)
     {
-        var diet = await service.GetDietByIdAsync(id);
+        var diet = await service.GetByIdAsync(id);
         if (diet == null) return NotFound();
 
-        await service.DeleteDietAsync(id);
+        await service.DeleteAsync(id);
 
         return NoContent();
     }

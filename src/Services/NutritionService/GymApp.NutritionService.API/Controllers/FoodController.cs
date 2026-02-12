@@ -14,7 +14,7 @@ public class FoodController(IFoodService service) : BaseController
     [HttpGet]
     public async Task<ActionResult<Pagination<Food>>> GetFoods([FromQuery] FoodSpecificationParameters parameters)
     {
-        var spec = new DummyPagingSpecification(parameters);
+        var spec = new FoodSortingSpecification(parameters);
 
         return await GetAllAsync<Food>(service, spec, parameters.PageNumber, parameters.PageSize);
     }
