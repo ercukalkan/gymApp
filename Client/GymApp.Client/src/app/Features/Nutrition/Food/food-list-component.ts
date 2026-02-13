@@ -25,7 +25,7 @@ export class FoodListComponent {
   }
 
   loadFoods() {
-    this.foodService.getFoods(this.paginationParams).subscribe({
+    this.foodService.getAll(this.paginationParams).subscribe({
       next: (data) => {
         this.data = data;
         this.cdr.detectChanges(); // Force change detection

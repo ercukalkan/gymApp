@@ -73,13 +73,13 @@ export class FoodDetailComponent implements OnInit {
   }
 
   private createFood(food: Food) {
-    this.foodService.addFood(food).subscribe((response) => {
+    this.foodService.add(food).subscribe((response) => {
       this.routerRedirect();
     });
   }
 
   private updateFood(id: number, food: Food) {
-    this.foodService.updateFood(id, food).subscribe((response) => {
+    this.foodService.update(id, food).subscribe((response) => {
       this.routerRedirect();
     });
   }
@@ -95,7 +95,7 @@ export class FoodDetailComponent implements OnInit {
     }
 
     this.isDeleting = true;
-    this.foodService.deleteFood(id).subscribe({
+    this.foodService.delete(id).subscribe({
       next: () => {
         this.isDeleting = false;
         this.routerRedirect();
@@ -109,7 +109,7 @@ export class FoodDetailComponent implements OnInit {
   }
 
   private loadFoodDetails(id: number) {
-    this.foodService.getFoodById(id).subscribe((data) => {
+    this.foodService.getById(id).subscribe((data) => {
       this.food = data;
       this.foodForm.patchValue({
         nameCtrl: data.name || '',

@@ -22,7 +22,7 @@ export class FoodItemComponent {
     }
 
     if (this.food) {
-      this.foodService.deleteFood(this.food.id).subscribe({
+      this.foodService.delete(this.food.id).subscribe({
         next: () => {
           // Optionally refresh parent or emit event
           window.location.reload(); // Simple refresh - can be improved with event emitter
