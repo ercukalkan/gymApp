@@ -1,8 +1,8 @@
 import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { FoodService } from '../../../Core/Services/food-service';
-import { Food } from '../../../Shared/Models/Food';
+import { FoodService } from '../../../../Core/Services/food-service';
+import { Food } from '../../../../Shared/Models/Food';
 
 @Component({
   selector: 'app-food-item-component',

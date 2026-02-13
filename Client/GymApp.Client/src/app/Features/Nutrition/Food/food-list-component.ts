@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { FoodService } from '../../Core/Services/food-service';
+import { FoodService } from '../../../Core/Services/food-service';
 import { FoodItemComponent } from './food-item-component/food-item-component';
 import { RouterLink } from '@angular/router';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { PaginationParams } from '../../Shared/Models/PaginationParams';
-import { Pagination } from '../../Shared/Models/Pagination';
-import { Food } from '../../Shared/Models/Food';
+import { PaginationParams } from '../../../Shared/Models/PaginationParams';
+import { Pagination } from '../../../Shared/Models/Pagination';
+import { Food } from '../../../Shared/Models/Food';
 
 @Component({
   selector: 'app-food-list-component',

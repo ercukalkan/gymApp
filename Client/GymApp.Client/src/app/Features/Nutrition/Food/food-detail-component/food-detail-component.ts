@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { FoodService } from '../../../Core/Services/food-service';
+import { FoodService } from '../../../../Core/Services/food-service';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Food } from '../../../Shared/Models/Food';
+import { Food } from '../../../../Shared/Models/Food';
 
 @Component({
   selector: 'app-food-detail-component',
