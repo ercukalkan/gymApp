@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FoodService } from '../../../Core/Services/food-service';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Food } from '../../../Shared/Models/Food';
 
 @Component({
   selector: 'app-food-detail-component',
@@ -12,7 +13,7 @@ import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 export class FoodDetailComponent implements OnInit {
   private foodService = inject(FoodService);
   private route = inject(ActivatedRoute);
-  food?: any;
+  food?: Food;
   cdr = inject(ChangeDetectorRef);
   mode: 'add' | 'edit' = 'edit';
   private router = inject(Router);
@@ -47,13 +48,13 @@ export class FoodDetailComponent implements OnInit {
   }
 
   onSubmit() {
-    let food = {
-      id: this.food?.id,
-      name: this.foodForm.value.nameCtrl,
-      calories: this.foodForm.value.caloriesCtrl,
-      protein: this.foodForm.value.proteinCtrl,
-      carbohydrates: this.foodForm.value.carbsCtrl,
-      fats: this.foodForm.value.fatsCtrl,
+    let food: Food = {
+      id: this.food?.id!,
+      name: this.foodForm.value.nameCtrl!,
+      calories: this.foodForm.value.caloriesCtrl!,
+      protein: this.foodForm.value.proteinCtrl!,
+      carbohydrates: this.foodForm.value.carbsCtrl!,
+      fats: this.foodForm.value.fatsCtrl!,
     };
 
     if (this.mode === 'add') {
@@ -71,19 +72,19 @@ export class FoodDetailComponent implements OnInit {
     }
   }
 
-  private createFood(food: any) {
+  private createFood(food: Food) {
     this.foodService.addFood(food).subscribe((response) => {
       this.routerRedirect();
     });
   }
 
-  private updateFood(id: any, food: any) {
+  private updateFood(id: number, food: Food) {
     this.foodService.updateFood(id, food).subscribe((response) => {
       this.routerRedirect();
     });
   }
 
-  private deleteFood(id: any) {
+  private deleteFood(id: number) {
     // Confirmation dialog
     if (
       !confirm(
@@ -107,7 +108,7 @@ export class FoodDetailComponent implements OnInit {
     });
   }
 
-  private loadFoodDetails(id: any) {
+  private loadFoodDetails(id: number) {
     this.foodService.getFoodById(id).subscribe((data) => {
       this.food = data;
       this.foodForm.patchValue({

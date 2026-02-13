@@ -1,30 +1,26 @@
-<div class="food-card" [routerLink]="['/nutrition/food', food.id]">
+<div class="food-card" [routerLink]="['/nutrition/food', food?.id]">
   <div class="card-header">
-    <h3 class="food-name">{{food.name}}</h3>
-    <button 
-      class="delete-btn" 
-      title="Delete food"
-      (click)="onDelete($event)"
-      type="button">
+    <h3 class="food-name">{{ food?.name }}</h3>
+    <button class="delete-btn" title="Delete food" (click)="onDelete($event)" type="button">
       <span class="trash-icon">🗑️</span>
     </button>
   </div>
   <div class="nutrition-info">
     <div class="nutrition-item">
       <span class="nutrition-label">Calories</span>
-      <span class="nutrition-value">{{food.calories}} kcal</span>
+      <span class="nutrition-value">{{ food?.calories }} kcal</span>
     </div>
     <div class="nutrition-item">
       <span class="nutrition-label">Protein</span>
-      <span class="nutrition-value">{{food.protein}} g</span>
+      <span class="nutrition-value">{{ food?.protein }} g</span>
     </div>
     <div class="nutrition-item">
       <span class="nutrition-label">Carbs</span>
-      <span class="nutrition-value">{{food.carbohydrates}} g</span>
+      <span class="nutrition-value">{{ food?.carbohydrates }} g</span>
     </div>
     <div class="nutrition-item">
       <span class="nutrition-label">Fats</span>
-      <span class="nutrition-value">{{food.fats}} g</span>
+      <span class="nutrition-value">{{ food?.fats }} g</span>
     </div>
   </div>
 </div>

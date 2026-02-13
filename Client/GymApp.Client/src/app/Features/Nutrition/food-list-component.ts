@@ -3,6 +3,9 @@ import { FoodService } from '../../Core/Services/food-service';
 import { FoodItemComponent } from './food-item-component/food-item-component';
 import { RouterLink } from '@angular/router';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { PaginationParams } from '../../Shared/Models/PaginationParams';
+import { Pagination } from '../../Shared/Models/Pagination';
+import { Food } from '../../Shared/Models/Food';
 
 @Component({
   selector: 'app-food-list-component',
@@ -11,21 +14,18 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
   styleUrl: './food-list-component.css',
 })
 export class FoodListComponent {
-  data: any;
+  data?: Pagination<Food>;
   foodService = inject(FoodService);
   cdr = inject(ChangeDetectorRef);
 
-  pagingParams = {
-    pageNumber: 1,
-    pageSize: 4,
-  };
+  paginationParams = new PaginationParams();
 
   ngOnInit(): void {
     this.loadFoods();
   }
 
   loadFoods() {
-    this.foodService.getFoods(this.pagingParams).subscribe({
+    this.foodService.getFoods(this.paginationParams).subscribe({
       next: (data) => {
         this.data = data;
         this.cdr.detectChanges(); // Force change detection
@@ -35,8 +35,8 @@ export class FoodListComponent {
   }
 
   handlePaginatorEvent(e: PageEvent) {
-    this.pagingParams.pageNumber = e.pageIndex + 1;
-    this.pagingParams.pageSize = e.pageSize;
+    this.paginationParams.pagenumber = e.pageIndex + 1;
+    this.paginationParams.pagesize = e.pageSize;
     this.loadFoods();
   }
 }

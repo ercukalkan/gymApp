@@ -13,8 +13,8 @@
 
 <div class="paginator-row">
   <mat-paginator
-    [length]="data.total"
-    [pageSize]="pagingParams.pageSize"
+    [length]="data?.total"
+    [pageSize]="paginationParams.pagesize"
     [pageSizeOptions]="[3, 5, 10]"
     [showFirstLastButtons]="true"
     aria-label="Select page"
