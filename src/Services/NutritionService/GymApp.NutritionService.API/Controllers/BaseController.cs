@@ -9,13 +9,15 @@ namespace GymApp.NutritionService.API.Controllers;
 
 public abstract class BaseController<T>(IService<T> service) : ControllerBase where T : BaseEntity
 {
+    protected readonly IService<T> Service = service;
+
     [HttpGet]
     public virtual async Task<ActionResult<Pagination<T>>> GetAllAsync([FromQuery] PaginationParams parameters)
     {
         var spec = new PagingSpecification<T>(parameters);
 
-        var source = await service.GetAllAsync(spec);
-        var count = await service.CountAsync(spec);
+        var source = await Service.GetAllAsync(spec);
+        var count = await Service.CountAsync(spec);
 
         return Ok(new Pagination<T>(parameters.PageNumber, parameters.PageSize, count, source));
     }
@@ -24,7 +26,7 @@ public abstract class BaseController<T>(IService<T> service) : ControllerBase wh
     [ActionName(nameof(GetByIdAsync))]
     public virtual async Task<ActionResult<T>> GetByIdAsync(Guid id)
     {
-        var entity = await service.GetByIdAsync(id);
+        var entity = await Service.GetByIdAsync(id);
         if (entity == null) return NotFound();
 
         return Ok(entity);
@@ -33,7 +35,7 @@ public abstract class BaseController<T>(IService<T> service) : ControllerBase wh
     [HttpPost]
     public virtual async Task<ActionResult<T>> CreateAsync(T entity)
     {
-        await service.CreateAsync(entity);
+        await Service.CreateAsync(entity);
 
         return CreatedAtAction(nameof(GetByIdAsync), new { id = entity.Id }, entity);
     }
@@ -45,11 +47,11 @@ public abstract class BaseController<T>(IService<T> service) : ControllerBase wh
 
         try
         {
-            await service.UpdateAsync(entity);
+            await Service.UpdateAsync(entity);
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (await service.GetByIdAsync(id) == null)
+            if (await Service.GetByIdAsync(id) == null)
             {
                 return NotFound();
             }
@@ -65,10 +67,10 @@ public abstract class BaseController<T>(IService<T> service) : ControllerBase wh
     [HttpDelete("{id}")]
     public virtual async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var entity = await service.GetByIdAsync(id);
+        var entity = await Service.GetByIdAsync(id);
         if (entity == null) return NotFound();
 
-        await service.DeleteAsync(id);
+        await Service.DeleteAsync(id);
 
         return NoContent();
     }
