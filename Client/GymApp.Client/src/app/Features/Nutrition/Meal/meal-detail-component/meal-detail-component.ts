@@ -3,14 +3,9 @@ import { Meal } from '../../../../Shared/Models/Meal';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Food } from '../../../../Shared/Models/Food';
-import {
-  MatFormField,
-  MatLabel,
-  MatOption,
-  MatSelect,
-  MatSelectTrigger,
-} from '@angular/material/select';
+import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
 import { MealService } from '../../../../Core/Services/meal-service';
+import { FoodService } from '../../../../Core/Services/food-service';
 
 @Component({
   selector: 'app-meal-details-component',
@@ -20,6 +15,7 @@ import { MealService } from '../../../../Core/Services/meal-service';
 })
 export class MealDetailComponent {
   private mealService = inject(MealService);
+  private foodService = inject(FoodService);
   private route = inject(ActivatedRoute);
   meal?: Meal;
   cdr = inject(ChangeDetectorRef);
@@ -27,7 +23,7 @@ export class MealDetailComponent {
   private router = inject(Router);
   isDeleting = false;
 
-  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+  foodList?: Food[];
 
   // Form group for food details
   foodForm = new FormGroup({
@@ -43,6 +39,7 @@ export class MealDetailComponent {
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
     this.mode = id ? 'edit' : 'add';
+    this.getFoods();
 
     if (this.mode === 'edit') {
       this.loadFoodDetails(id);
@@ -58,22 +55,33 @@ export class MealDetailComponent {
     }
   }
 
-  onSubmit() {
-    let meal: Meal = {
-      id: this.meal?.id!,
-      name: this.foodForm.value.nameCtrl!,
-      calories: this.foodForm.value.caloriesCtrl!,
-      protein: this.foodForm.value.proteinCtrl!,
-      carbohydrates: this.foodForm.value.carbsCtrl!,
-      fats: this.foodForm.value.fatsCtrl!,
-      mealFoods: this.foodForm.value.mealFoodsCtrl!,
-    };
+  getFoods() {
+    this.foodService.getAllNoPaging().subscribe({
+      next: (data) => {
+        this.foodList = data.source;
+      },
+      error: (err) => console.error(err),
+    });
+  }
 
-    if (this.mode === 'add') {
-      this.createFood(meal);
-    } else if (this.mode === 'edit' && this.meal) {
-      -this.updateFood(this.meal.id, meal);
-    }
+  onSubmit() {
+    // let meal: Meal = {
+    //   id: this.meal?.id!,
+    //   name: this.foodForm.value.nameCtrl!,
+    //   calories: this.foodForm.value.caloriesCtrl!,
+    //   protein: this.foodForm.value.proteinCtrl!,
+    //   carbohydrates: this.foodForm.value.carbsCtrl!,
+    //   fats: this.foodForm.value.fatsCtrl!,
+    //   mealFoods: this.foodForm.value.mealFoodsCtrl!,
+    // };
+
+    // if (this.mode === 'add') {
+    //   this.createFood(meal);
+    // } else if (this.mode === 'edit' && this.meal) {
+    //   this.updateFood(this.meal.id, meal);
+    // }
+
+    console.log(this.foodForm.value.mealFoodsCtrl);
   }
 
   // Public method to be called from template

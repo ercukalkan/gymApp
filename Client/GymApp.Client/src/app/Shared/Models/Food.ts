@@ -1,4 +1,4 @@
-import { MealFood } from './MealFood';
+import { Meal } from './Meal';
 
 export type Food = {
   id: number;
@@ -7,5 +7,5 @@ export type Food = {
   protein: number;
   carbohydrates: number;
   fats: number;
-  mealFoods?: MealFood[];
+  mealFoods?: Meal[];
 };

@@ -9,4 +9,8 @@ export class FoodService extends NutritionGenericService<Food> {
   constructor() {
     super('http://localhost:5000/api/nutrition', 'food');
   }
+
+  getAllNoPaging() {
+    return this.http.get<any>(`${this.baseUrl}/${this.entityName}`);
+  }
 }

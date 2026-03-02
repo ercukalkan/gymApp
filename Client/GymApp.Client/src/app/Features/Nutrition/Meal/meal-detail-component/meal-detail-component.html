@@ -88,18 +88,10 @@
     </div>
 
     <mat-form-field>
-      <mat-label>Toppings</mat-label>
-      <mat-select formControlName="mealFoods" multiple>
-        <!-- <mat-select-trigger> -->
-        <!-- {{foodForm.value?.mealFoodsCtrl![0]}} -->
-        <!-- @if ((toppings.value?.length || 0) > 1) {
-              <span class="example-additional-selection">
-                (+{{(toppings.value?.length || 0) - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})
-              </span>
-            } -->
-        <!-- </mat-select-trigger> -->
-        @for (topping of toppingList; track topping) {
-          <mat-option [value]="topping">{{ topping }}</mat-option>
+      <mat-label>Add Foods</mat-label>
+      <mat-select formControlName="mealFoodsCtrl" multiple>
+        @for (food of foodList; track food) {
+          <mat-option [value]="food">{{ food.name }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
