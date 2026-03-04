@@ -4,6 +4,7 @@ using GymApp.NutritionService.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymApp.NutritionService.Data.Migrations
 {
     [DbContext(typeof(NutritionContext))]
-    partial class NutritionContextModelSnapshot : ModelSnapshot
+    [Migration("20260304124452_NameRequired_Food-Meal")]
+    partial class NameRequired_FoodMeal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
