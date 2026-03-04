@@ -2,53 +2,34 @@ using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Data.Entities;
 using GymApp.NutritionService.Core.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using GymApp.NutritionService.Data.Entities.JunctionEntities;
+using GymApp.Shared.Specification;
+using GymApp.NutritionService.Data.DTOs;
 
 namespace GymApp.NutritionService.Core.Repositories;
 
 public class MealRepository(NutritionContext _context) : Repository<Meal>(_context), IMealRepository
 {
-    public override async Task<Meal?> GetByIdAsync(Guid id)
+    public async Task<IReadOnlyList<MealDTO>> GetAllAsync(ISpecification<Meal> spec)
     {
-        return await Context.Meals
+        var source = SpecificationEvaluator<Meal>.GetQuery(Context.Meals
             .Include(m => m.MealFoods)
-            .ThenInclude(mf => mf.Food)
-            .FirstOrDefaultAsync(m => m.Id == id);
-    }
+            .ThenInclude(mf => mf.Food), spec);
 
-    public override async Task<Meal> AddAsync(Meal entity)
-    {
-        if (entity == null)
-            throw new NullReferenceException("Meal entity is null.");
-
-        var newMeal = new Meal()
+        var result = source.Select(m => new MealDTO
         {
-            Name = entity.Name,
-            MealFoods = [.. entity.MealFoods.Select(mf => new MealFood() { FoodId = mf.FoodId })]
-        };
+            Id = m.Id,
+            Name = m.Name,
+            Calories = m.Calories,
+            Carbohydrates = m.Carbohydrates,
+            Protein = m.Protein,
+            Fats = m.Fats,
+            MealFoods = m.MealFoods.Select(mf => new NameDTO
+            {
+                Name = mf.Food.Name
+            })
+        })
+        .AsNoTracking();
 
-        await Context.Meals.AddAsync(newMeal);
-        await Context.SaveChangesAsync();
-
-        return newMeal;
-    }
-
-    public override async Task UpdateAsync(Meal entity)
-    {
-        var existingMeal = await GetByIdAsync(entity.Id)
-            ?? throw new InvalidOperationException($"Meal with ID {entity.Id} not found.");
-
-        existingMeal.Name = entity.Name;
-
-        var mealFoodIds = existingMeal.MealFoods.Select(mf => mf.FoodId).ToList();
-        var entityFoodIds = entity.MealFoods.Select(mf => mf.FoodId).ToList();
-
-        var foodsToRemove = existingMeal.MealFoods.Where(mf => !entityFoodIds.Contains(mf.FoodId)).ToList();
-        var foodsToAdd = entity.MealFoods.Where(mf => !mealFoodIds.Contains(mf.FoodId)).ToList();
-
-        foodsToRemove.ForEach(mf => existingMeal.MealFoods.Remove(mf));
-        foodsToAdd.ForEach(existingMeal.MealFoods.Add);
-
-        await Context.SaveChangesAsync();
+        return await result.ToListAsync();
     }
 }

@@ -1,47 +1,28 @@
 using GymApp.NutritionService.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using GymApp.NutritionService.Core.Services.Interfaces;
+using GymApp.Shared.Pagination;
+using GymApp.NutritionService.Core.Specifications.MealSpecifications;
+using GymApp.NutritionService.Core.Specifications;
+using GymApp.NutritionService.Data.DTOs;
 
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class MealController(IMealService service) : BaseController<Meal>(service)
 {
-    [HttpPost]
-    public override async Task<ActionResult<Meal>> CreateAsync(Meal entity)
+    [HttpGet]
+    public async Task<ActionResult<Pagination<MealDTO>>> GetAllAsync([FromQuery] MealSpecificationParameters parameters)
     {
-        if (entity == null)
-            return BadRequest();
+        var spec = new MealSortingSpecification(parameters);
 
-        var newMeal = await Service.CreateAsync(entity);
-        var createdMeal = await Service.GetByIdAsync(newMeal.Id);
+        var pagination = new Pagination<MealDTO>(
+            parameters.PageNumber,
+            parameters.PageSize,
+            await service.CountAsync(spec),
+            await service.GetAllAsync(spec)
+        );
 
-        if (createdMeal != null)
-        {
-            return CreatedAtAction(
-                nameof(GetByIdAsync),
-                new { id = createdMeal.Id },
-                new
-                {
-                    createdMeal.Id,
-                    createdMeal.Name,
-                    createdMeal.Calories,
-                    createdMeal.Carbohydrates,
-                    createdMeal.Protein,
-                    createdMeal.Fats
-                });
-        }
-
-        return BadRequest();
-    }
-
-    [HttpPut("{id}")]
-    public override async Task<IActionResult> UpdateAsync(Guid id, Meal entity)
-    {
-        if (!await Service.IfExistsAsync(id)) return NotFound();
-
-        await Service.UpdateAsync(entity);
-
-        return NoContent();
+        return Ok(pagination);
     }
 }
