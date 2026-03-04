@@ -6,7 +6,8 @@ namespace GymApp.NutritionService.Data.Entities;
 public class Food : BaseEntity
 {
     [MaxLength(50)]
-    public string? Name { get; set; }
+    [Required(ErrorMessage = "Name is required for Food.")]
+    public required string Name { get; set; }
     public double Calories { get; set; }
     public double Protein { get; set; }
     public double Carbohydrates { get; set; }

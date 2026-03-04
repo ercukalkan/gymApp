@@ -8,5 +8,5 @@ public class MealDTO
     public double Carbohydrates { get; set; }
     public double Protein { get; set; }
     public double Fats { get; set; }
-    public IEnumerable<FoodDTO>? MealFoods { get; set; }
+    public IEnumerable<NameDTO>? MealFoods { get; set; }
 }
