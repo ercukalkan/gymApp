@@ -7,34 +7,34 @@ namespace GymApp.NutritionService.Core.Services;
 
 public class Service<T>(IRepository<T> repository) : IService<T> where T : BaseEntity
 {
-    public async Task<T> CreateAsync(T entity)
+    public async Task<T?> GetByIdAsyncGeneric(Guid id)
     {
-        return await repository.AddAsync(entity);
+        return await repository.GetByIdAsyncGeneric(id);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<IReadOnlyList<T>> GetAllAsyncGeneric(ISpecification<T> spec)
     {
-        await repository.DeleteAsync(id);
+        return await repository.GetAllAsyncGeneric(spec);
     }
 
-    public async Task<IReadOnlyList<T>> GetAllAsync(ISpecification<T> spec)
+    public async Task<T> CreateAsyncGeneric(T entity)
     {
-        return await repository.GetAllAsync(spec);
+        return await repository.AddAsyncGeneric(entity);
+    }
+
+    public async Task UpdateAsyncGeneric(T entity)
+    {
+        await repository.UpdateAsyncGeneric(entity);
+    }
+
+    public async Task DeleteAsyncGeneric(Guid id)
+    {
+        await repository.DeleteAsyncGeneric(id);
     }
 
     public async Task<int> CountAsync(ISpecification<T> spec)
     {
         return await repository.CountAsync(spec);
-    }
-
-    public async Task<T?> GetByIdAsync(Guid id)
-    {
-        return await repository.GetByIdAsync(id);
-    }
-
-    public async Task UpdateAsync(T entity)
-    {
-        await repository.UpdateAsync(entity);
     }
 
     public async Task<bool> IfExistsAsync(Guid id)

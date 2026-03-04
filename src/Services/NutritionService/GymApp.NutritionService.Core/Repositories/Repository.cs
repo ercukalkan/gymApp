@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using GymApp.NutritionService.Core.Repositories.Interfaces;
 using GymApp.NutritionService.Data.Context;
 using GymApp.NutritionService.Data.Entities;
@@ -13,39 +12,32 @@ public class Repository<TEntity>(NutritionContext _context) : IRepository<TEntit
 
     protected NutritionContext Context => _context;
 
-    public virtual async Task<TEntity?> GetByIdAsync(Guid id)
-    {
-        return await _dbSet.FindAsync(id);
-    }
-
-    public virtual async Task<IReadOnlyList<TEntity>> GetAllAsync(ISpecification<TEntity> spec)
+    public async Task<IReadOnlyList<TEntity>> GetAllAsyncGeneric(ISpecification<TEntity> spec)
     {
         var source = SpecificationEvaluator<TEntity>.GetQuery(_dbSet, spec);
 
         return await source.ToListAsync();
     }
 
-    public async Task<int> CountAsync(ISpecification<TEntity> spec)
+    public async Task<TEntity?> GetByIdAsyncGeneric(Guid id)
     {
-        var query = spec.ApplyWhereCriteria(_dbSet);
-
-        return await query.CountAsync();
+        return await _dbSet.FindAsync(id);
     }
 
-    public virtual async Task<TEntity> AddAsync(TEntity entity)
+    public async Task<TEntity> AddAsyncGeneric(TEntity entity)
     {
         _dbSet.Add(entity);
         await _context.SaveChangesAsync();
         return entity;
     }
 
-    public virtual async Task UpdateAsync(TEntity entity)
+    public async Task UpdateAsyncGeneric(TEntity entity)
     {
         _dbSet.Entry(entity).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsyncGeneric(Guid id)
     {
         var entity = await _dbSet.FindAsync(id);
         if (entity != null)
@@ -53,6 +45,13 @@ public class Repository<TEntity>(NutritionContext _context) : IRepository<TEntit
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<int> CountAsync(ISpecification<TEntity> spec)
+    {
+        var query = spec.ApplyWhereCriteria(_dbSet);
+
+        return await query.CountAsync();
     }
 
     public async Task<bool> IfExistsAsync(Guid id)

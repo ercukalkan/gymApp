@@ -11,47 +11,47 @@ public abstract class BaseController<T>(IService<T> service) : ControllerBase wh
 {
     protected readonly IService<T> Service = service;
 
-    [HttpGet]
-    public virtual async Task<ActionResult<Pagination<T>>> GetAllAsync([FromQuery] PaginationParams parameters)
+    [HttpGet("generic")]
+    public async Task<ActionResult<Pagination<T>>> GetAllAsyncGeneric([FromQuery] PaginationParams parameters)
     {
         var spec = new PagingSpecification<T>(parameters);
 
-        var source = await Service.GetAllAsync(spec);
+        var source = await Service.GetAllAsyncGeneric(spec);
         var count = await Service.CountAsync(spec);
 
         return Ok(new Pagination<T>(parameters.PageNumber, parameters.PageSize, count, source));
     }
 
-    [HttpGet("{id}")]
-    [ActionName(nameof(GetByIdAsync))]
-    public virtual async Task<ActionResult<T>> GetByIdAsync(Guid id)
+    [HttpGet("generic/{id}")]
+    [ActionName(nameof(GetByIdAsyncGeneric))]
+    public async Task<ActionResult<T>> GetByIdAsyncGeneric(Guid id)
     {
-        var entity = await Service.GetByIdAsync(id);
+        var entity = await Service.GetByIdAsyncGeneric(id);
         if (entity == null) return NotFound();
 
         return Ok(entity);
     }
 
-    [HttpPost]
-    public virtual async Task<ActionResult<T>> CreateAsync(T entity)
+    [HttpPost("generic")]
+    public async Task<ActionResult<T>> CreateAsyncGeneric(T entity)
     {
-        await Service.CreateAsync(entity);
+        await Service.CreateAsyncGeneric(entity);
 
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = entity.Id }, entity);
+        return CreatedAtAction(nameof(GetByIdAsyncGeneric), new { id = entity.Id }, entity);
     }
 
-    [HttpPut("{id}")]
-    public virtual async Task<IActionResult> UpdateAsync(Guid id, T entity)
+    [HttpPut("generic/{id}")]
+    public async Task<IActionResult> UpdateAsyncGeneric(Guid id, T entity)
     {
         if (id != entity.Id) return BadRequest();
 
         try
         {
-            await Service.UpdateAsync(entity);
+            await Service.UpdateAsyncGeneric(entity);
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (await Service.GetByIdAsync(id) == null)
+            if (await Service.GetByIdAsyncGeneric(id) == null)
             {
                 return NotFound();
             }
@@ -64,13 +64,13 @@ public abstract class BaseController<T>(IService<T> service) : ControllerBase wh
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public virtual async Task<IActionResult> DeleteAsync(Guid id)
+    [HttpDelete("generic/{id}")]
+    public async Task<IActionResult> DeleteAsyncGeneric(Guid id)
     {
-        var entity = await Service.GetByIdAsync(id);
+        var entity = await Service.GetByIdAsyncGeneric(id);
         if (entity == null) return NotFound();
 
-        await Service.DeleteAsync(id);
+        await Service.DeleteAsyncGeneric(id);
 
         return NoContent();
     }

@@ -5,11 +5,11 @@ namespace GymApp.NutritionService.Core.Services.Interfaces;
 
 public interface IService<T> where T : BaseEntity
 {
-    Task<T?> GetByIdAsync(Guid id);
-    Task<IReadOnlyList<T>> GetAllAsync(ISpecification<T> spec);
+    Task<IReadOnlyList<T>> GetAllAsyncGeneric(ISpecification<T> spec);
+    Task<T?> GetByIdAsyncGeneric(Guid id);
+    Task<T> CreateAsyncGeneric(T entity);
+    Task UpdateAsyncGeneric(T entity);
+    Task DeleteAsyncGeneric(Guid id);
     Task<int> CountAsync(ISpecification<T> spec);
-    Task<T> CreateAsync(T entity);
-    Task UpdateAsync(T entity);
-    Task DeleteAsync(Guid id);
     Task<bool> IfExistsAsync(Guid id);
 }
