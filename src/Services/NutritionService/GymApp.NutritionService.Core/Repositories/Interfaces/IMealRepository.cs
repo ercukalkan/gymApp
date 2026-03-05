@@ -6,5 +6,9 @@ namespace GymApp.NutritionService.Core.Repositories.Interfaces;
 
 public interface IMealRepository : IRepository<Meal>
 {
-    Task<IReadOnlyList<MealDTO>> GetAllAsync(ISpecification<Meal> spec);
+    Task<IReadOnlyList<MealResponseDTO>> GetAllAsync(ISpecification<Meal> spec);
+    Task<MealResponseDTO> GetByIdAsync(Guid id);
+    Task<MealResponseDTO> CreateAsync(MealRequestDTO dto);
+    Task UpdateAsync(Guid id, MealRequestDTO dto);
+    Task DeleteAsync(Guid id);
 }
