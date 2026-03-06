@@ -36,5 +36,9 @@ public class NutritionContext(DbContextOptions<NutritionContext> options) : DbCo
             .HasOne(dm => dm.Meal)
             .WithMany(m => m.DietMeals)
             .HasForeignKey(dm => dm.MealId);
+
+        modelBuilder.Entity<MealFood>()
+            .Property(mf => mf.Quantity)
+            .HasDefaultValue(1);
     }
 }

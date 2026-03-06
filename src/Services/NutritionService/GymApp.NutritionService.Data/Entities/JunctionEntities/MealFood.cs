@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GymApp.NutritionService.Data.Entities.JunctionEntities;
@@ -13,5 +15,6 @@ public class MealFood
     public Guid FoodId { get; set; }
     public Food Food { get; set; } = null!;
 
-    public int Quantity { get; set; }
+    [Range(1, 3, ErrorMessage = "One food can not be added more than 3 times in a meal.")]
+    public int Quantity { get; set; } = 1;
 }
