@@ -7,24 +7,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymApp.NutritionService.API.Controllers;
 
-public abstract class BaseController<T>(IService<T> service) : ControllerBase where T : BaseEntity
+public abstract class BaseController<TEntity, TService>(TService service) : ControllerBase
+where TEntity : BaseEntity
+where TService : IService<TEntity>
 {
-    protected readonly IService<T> Service = service;
+    protected readonly TService Service = service;
 
     [HttpGet("generic")]
-    public async Task<ActionResult<Pagination<T>>> GetAllAsyncGeneric([FromQuery] PaginationParams parameters)
+    public async Task<ActionResult<Pagination<TEntity>>> GetAllAsyncGeneric([FromQuery] PaginationParams parameters)
     {
-        var spec = new PagingSpecification<T>(parameters);
+        var spec = new PagingSpecification<TEntity>(parameters);
 
         var source = await Service.GetAllAsyncGeneric(spec);
         var count = await Service.CountAsync(spec);
 
-        return Ok(new Pagination<T>(parameters.PageNumber, parameters.PageSize, count, source));
+        return Ok(new Pagination<TEntity>(parameters.PageNumber, parameters.PageSize, count, source));
     }
 
     [HttpGet("generic/{id}")]
     [ActionName(nameof(GetByIdAsyncGeneric))]
-    public async Task<ActionResult<T>> GetByIdAsyncGeneric(Guid id)
+    public async Task<ActionResult<TEntity>> GetByIdAsyncGeneric(Guid id)
     {
         var entity = await Service.GetByIdAsyncGeneric(id);
         if (entity == null) return NotFound();
@@ -33,7 +35,7 @@ public abstract class BaseController<T>(IService<T> service) : ControllerBase wh
     }
 
     [HttpPost("generic")]
-    public async Task<ActionResult<T>> CreateAsyncGeneric(T entity)
+    public async Task<ActionResult<TEntity>> CreateAsyncGeneric(TEntity entity)
     {
         await Service.CreateAsyncGeneric(entity);
 
@@ -41,7 +43,7 @@ public abstract class BaseController<T>(IService<T> service) : ControllerBase wh
     }
 
     [HttpPut("generic/{id}")]
-    public async Task<IActionResult> UpdateAsyncGeneric(Guid id, T entity)
+    public async Task<IActionResult> UpdateAsyncGeneric(Guid id, TEntity entity)
     {
         if (id != entity.Id) return BadRequest();
 

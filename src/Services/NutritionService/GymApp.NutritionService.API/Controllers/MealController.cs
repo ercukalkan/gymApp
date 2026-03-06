@@ -9,7 +9,7 @@ using GymApp.NutritionService.Data.DTOs;
 namespace GymApp.NutritionService.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class MealController(IMealService service) : BaseController<Meal>(service)
+public class MealController(IMealService service) : BaseController<Meal, IMealService>(service)
 {
     [HttpGet]
     public async Task<ActionResult<Pagination<MealResponseDTO>>> GetAllAsync([FromQuery] MealSpecificationParameters parameters)
@@ -19,8 +19,8 @@ public class MealController(IMealService service) : BaseController<Meal>(service
         var pagination = new Pagination<MealResponseDTO>(
             parameters.PageNumber,
             parameters.PageSize,
-            await service.CountAsync(spec),
-            await service.GetAllAsync(spec)
+            await Service.CountAsync(spec),
+            await Service.GetAllAsync(spec)
         );
 
         return Ok(pagination);
@@ -30,7 +30,7 @@ public class MealController(IMealService service) : BaseController<Meal>(service
     [ActionName(nameof(GetByIdAsync))]
     public async Task<ActionResult<MealResponseDTO>> GetByIdAsync(Guid id)
     {
-        var entity = await service.GetByIdAsync(id);
+        var entity = await Service.GetByIdAsync(id);
 
         if (entity == null)
             return NotFound("Entity not found.");
@@ -44,7 +44,7 @@ public class MealController(IMealService service) : BaseController<Meal>(service
         if (dto == null)
             return NotFound("Object is null.");
 
-        var createdMeal = await service.CreateAsync(dto);
+        var createdMeal = await Service.CreateAsync(dto);
 
         if (createdMeal != null)
         {
@@ -63,7 +63,7 @@ public class MealController(IMealService service) : BaseController<Meal>(service
     {
         if (!await Service.IfExistsAsync(id)) return NotFound();
 
-        await service.UpdateAsync(id, dto);
+        await Service.UpdateAsync(id, dto);
 
         return NoContent();
     }
@@ -73,7 +73,7 @@ public class MealController(IMealService service) : BaseController<Meal>(service
     {
         if (!await Service.IfExistsAsync(id)) return NotFound();
 
-        await service.DeleteAsync(id);
+        await Service.DeleteAsync(id);
 
         return NoContent();
     }

@@ -12,4 +12,6 @@ public class MealFood
 
     public Guid FoodId { get; set; }
     public Food Food { get; set; } = null!;
+
+    public int Quantity { get; set; }
 }
