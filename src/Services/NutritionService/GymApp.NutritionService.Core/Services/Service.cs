@@ -5,24 +5,28 @@ using GymApp.Shared.Specification;
 
 namespace GymApp.NutritionService.Core.Services;
 
-public class Service<T>(IRepository<T> repository) : IService<T> where T : BaseEntity
+public class Service<TEntity, TRepository>(TRepository repository) : IService<TEntity>
+where TEntity : BaseEntity
+where TRepository : IRepository<TEntity>
 {
-    public async Task<T?> GetByIdAsyncGeneric(Guid id)
+    protected TRepository Repository => repository;
+
+    public async Task<TEntity?> GetByIdAsyncGeneric(Guid id)
     {
         return await repository.GetByIdAsyncGeneric(id);
     }
 
-    public async Task<IReadOnlyList<T>> GetAllAsyncGeneric(ISpecification<T> spec)
+    public async Task<IReadOnlyList<TEntity>> GetAllAsyncGeneric(ISpecification<TEntity> spec)
     {
         return await repository.GetAllAsyncGeneric(spec);
     }
 
-    public async Task<T> CreateAsyncGeneric(T entity)
+    public async Task<TEntity> CreateAsyncGeneric(TEntity entity)
     {
         return await repository.AddAsyncGeneric(entity);
     }
 
-    public async Task UpdateAsyncGeneric(T entity)
+    public async Task UpdateAsyncGeneric(TEntity entity)
     {
         await repository.UpdateAsyncGeneric(entity);
     }
@@ -32,7 +36,7 @@ public class Service<T>(IRepository<T> repository) : IService<T> where T : BaseE
         await repository.DeleteAsyncGeneric(id);
     }
 
-    public async Task<int> CountAsync(ISpecification<T> spec)
+    public async Task<int> CountAsync(ISpecification<TEntity> spec)
     {
         return await repository.CountAsync(spec);
     }

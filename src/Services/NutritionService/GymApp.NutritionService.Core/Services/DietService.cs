@@ -4,7 +4,7 @@ using GymApp.NutritionService.Core.Services.Interfaces;
 
 namespace GymApp.NutritionService.Core.Services;
 
-public class DietService(IDietRepository _repository) : Service<Diet>(_repository), IDietService
+public class DietService(IDietRepository _repository) : Service<Diet, IDietRepository>(_repository), IDietService
 {
 
 }

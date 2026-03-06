@@ -11,7 +11,7 @@ public abstract class BaseController<TEntity, TService>(TService service) : Cont
 where TEntity : BaseEntity
 where TService : IService<TEntity>
 {
-    protected readonly TService Service = service;
+    protected TService Service => service;
 
     [HttpGet("generic")]
     public async Task<ActionResult<Pagination<TEntity>>> GetAllAsyncGeneric([FromQuery] PaginationParams parameters)
