@@ -43,7 +43,7 @@ public class MealRepository(NutritionContext _context) : Repository<Meal>(_conte
         var newMeal = new Meal
         {
             Name = dto.Name,
-            MealFoods = [.. dto.MealFoodIds.Select(i => new MealFood { FoodId = i })]
+            MealFoods = [.. dto.MealFoodDTOs.Select(dto => new MealFood { FoodId = dto.FoodId, Quantity = dto.Quantity })]
         };
 
         var entityEntry = await Context.Meals.AddAsync(newMeal);
@@ -60,37 +60,38 @@ public class MealRepository(NutritionContext _context) : Repository<Meal>(_conte
 
     public async Task UpdateAsync(Guid id, MealRequestDTO dto)
     {
-        var existingMeal = await Context.Meals
+        Meal? existingMeal = await Context.Meals
             .Include(m => m.MealFoods)
-            .ThenInclude(mf => mf.Food)
             .FirstOrDefaultAsync(m => m.Id == id)
             ?? throw new InvalidOperationException($"No existing Meal found with Id: {id}");
 
         existingMeal.Name = dto.Name;
 
-        var existingMealFoodIds = existingMeal.MealFoods
-            .Select(mf => mf.FoodId)
-            .ToHashSet();
+        Dictionary<Guid, MealFood> existingMealFoodIds = existingMeal.MealFoods
+            .ToDictionary(mf => mf.FoodId);
 
-        var dtoMealFoodIds = dto.MealFoodIds
-            .ToHashSet();
+        Dictionary<Guid, int> dtoMealFoods = dto.MealFoodDTOs
+            .ToDictionary(dto => dto.FoodId, dto => dto.Quantity);
 
-        var foodsToRemove = existingMeal.MealFoods
-            .Where(mf => !dtoMealFoodIds.Contains(mf.FoodId))
-            .ToHashSet();
-
-        var foodsToAdd = dtoMealFoodIds
-            .Where(mf => !existingMealFoodIds.Contains(mf))
-            .ToHashSet();
-
-        foreach (var mealfood in foodsToRemove)
+        foreach (var (foodId, quantity) in dtoMealFoods)
         {
-            existingMeal.MealFoods.Remove(mealfood);
+            if (existingMealFoodIds.TryGetValue(foodId, out MealFood? existingMealFood))
+            {
+                existingMealFood.Quantity = quantity;
+            }
+            else
+            {
+                existingMeal.MealFoods.Add(new MealFood { FoodId = foodId, Quantity = quantity });
+            }
         }
 
-        foreach (var foodId in foodsToAdd)
+        List<MealFood> mealFoodsToRemove = [.. existingMeal.MealFoods
+            .Where(mf => !dtoMealFoods.ContainsKey(mf.FoodId))
+        ];
+
+        foreach (var mealFood in mealFoodsToRemove)
         {
-            existingMeal.MealFoods.Add(new MealFood { FoodId = foodId });
+            existingMeal.MealFoods.Remove(mealFood);
         }
 
         await Context.SaveChangesAsync();

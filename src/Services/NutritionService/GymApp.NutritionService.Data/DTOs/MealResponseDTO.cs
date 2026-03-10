@@ -10,7 +10,7 @@ public class MealResponseDTO
     public double Carbohydrates { get; set; }
     public double Protein { get; set; }
     public double Fats { get; set; }
-    public IEnumerable<NameDTO>? MealFoods { get; set; }
+    public IEnumerable<MealFoodResponseDTO>? MealFoods { get; set; }
 
     public static MealResponseDTO FromEntity(Meal entity)
     {
@@ -22,7 +22,7 @@ public class MealResponseDTO
             Carbohydrates = entity.Carbohydrates,
             Protein = entity.Protein,
             Fats = entity.Fats,
-            MealFoods = entity.MealFoods.Select(mf => new NameDTO { Name = mf.Food.Name })
+            MealFoods = entity.MealFoods.Select(mf => new MealFoodResponseDTO { Name = mf.Food.Name, Quantity = mf.Quantity })
         };
     }
 }
