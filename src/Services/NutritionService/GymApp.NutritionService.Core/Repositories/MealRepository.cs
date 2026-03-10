@@ -46,7 +46,7 @@ public class MealRepository(NutritionContext _context) : Repository<Meal>(_conte
             MealFoods = [.. dto.MealFoodDTOs.Select(dto => new MealFood { FoodId = dto.FoodId, Quantity = dto.Quantity })]
         };
 
-        var entityEntry = await Context.Meals.AddAsync(newMeal);
+        await Context.Meals.AddAsync(newMeal);
         await Context.SaveChangesAsync();
 
         var addedMeal = await Context.Meals
@@ -55,6 +55,9 @@ public class MealRepository(NutritionContext _context) : Repository<Meal>(_conte
             .FirstOrDefaultAsync(m => m.Id == newMeal.Id)
             ?? throw new KeyNotFoundException("New meal not found.");
 
+        addedMeal.RecalculateNutrients();
+        await Context.SaveChangesAsync();
+
         return MealResponseDTO.FromEntity(addedMeal);
     }
 
@@ -62,6 +65,7 @@ public class MealRepository(NutritionContext _context) : Repository<Meal>(_conte
     {
         Meal? existingMeal = await Context.Meals
             .Include(m => m.MealFoods)
+            .ThenInclude(mf => mf.Food)
             .FirstOrDefaultAsync(m => m.Id == id)
             ?? throw new InvalidOperationException($"No existing Meal found with Id: {id}");
 
@@ -93,6 +97,8 @@ public class MealRepository(NutritionContext _context) : Repository<Meal>(_conte
         {
             existingMeal.MealFoods.Remove(mealFood);
         }
+
+        existingMeal.RecalculateNutrients();
 
         await Context.SaveChangesAsync();
     }

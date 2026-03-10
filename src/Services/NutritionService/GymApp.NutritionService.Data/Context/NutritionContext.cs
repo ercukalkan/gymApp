@@ -1,6 +1,8 @@
+using System.Diagnostics.Metrics;
 using GymApp.NutritionService.Data.Entities;
 using GymApp.NutritionService.Data.Entities.JunctionEntities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GymApp.NutritionService.Data.Context;
 
@@ -40,5 +42,26 @@ public class NutritionContext(DbContextOptions<NutritionContext> options) : DbCo
         modelBuilder.Entity<MealFood>()
             .Property(mf => mf.Quantity)
             .HasDefaultValue(1);
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        IEnumerable<EntityEntry<BaseEntity>> entries = ChangeTracker.Entries<BaseEntity>();
+
+        foreach (EntityEntry<BaseEntity> entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+            }
+
+            if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
     }
 }
