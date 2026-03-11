@@ -29,32 +29,5 @@ public class DbSeeder
             context.Foods.AddRange(foods);
             await context.SaveChangesAsync();
         }
-
-        if (!context.Meals.Any())
-        {
-            var meals = new List<Meal>
-            {
-                new() { Name = "Grilled Chicken with Brown Rice and Broccoli" },
-                new() { Name = "Salmon with Sweet Potato and Spinach" },
-                new() { Name = "Egg and Greek Yogurt Breakfast Bowl" },
-                new() { Name = "Quinoa Salad with Almonds and Vegetables" }
-            };
-
-            context.Meals.AddRange(meals);
-            await context.SaveChangesAsync();
-        }
-
-        if (!context.Diets.Any())
-        {
-            var diets = new List<Diet>
-            {
-                new() { Name = "High Protein Diet" },
-                new() { Name = "Low Carb Diet" },
-                new() { Name = "Balanced Diet" }
-            };
-
-            context.Diets.AddRange(diets);
-            await context.SaveChangesAsync();
-        }
     }
 }
