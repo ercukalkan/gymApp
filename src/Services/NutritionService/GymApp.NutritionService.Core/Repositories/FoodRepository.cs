@@ -21,16 +21,16 @@ public class FoodRepository(NutritionContext _context) : Repository<Food>(_conte
         existingFood.Protein = dto.Protein;
         existingFood.Fats = dto.Fats;
 
-        List<Guid> corrMFMealIds = [.. Context.MealFoods.Where(mf => mf.FoodId == id).Select(mf => mf.MealId)];
+        List<Guid> affectedMealIds = [.. Context.MealFoods.Where(mf => mf.FoodId == id).Select(mf => mf.MealId)];
 
-        List<Meal> corrMeals = [..
+        List<Meal> affectedMeals = [..
             Context.Meals
             .Include(m => m.MealFoods)
             .ThenInclude(mf => mf.Food)
-            .Where(m => corrMFMealIds.Contains(m.Id))
+            .Where(m => affectedMealIds.Contains(m.Id))
         ];
 
-        foreach (Meal meal in corrMeals)
+        foreach (Meal meal in affectedMeals)
         {
             meal.RecalculateNutrients();
         }
