@@ -85,7 +85,15 @@ public class MealRepository(NutritionContext _context) : Repository<Meal>(_conte
             }
             else
             {
-                existingMeal.MealFoods.Add(new MealFood { FoodId = foodId, Quantity = quantity });
+                Food food = await Context.Foods.FindAsync(foodId)
+                    ?? throw new KeyNotFoundException($"No food found with Id {foodId}.");
+
+                existingMeal.MealFoods.Add(new MealFood
+                {
+                    Food = food,
+                    FoodId = foodId,
+                    Quantity = quantity
+                });
             }
         }
 
