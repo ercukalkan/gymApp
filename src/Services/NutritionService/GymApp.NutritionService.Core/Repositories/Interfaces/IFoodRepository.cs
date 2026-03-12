@@ -6,4 +6,5 @@ namespace GymApp.NutritionService.Core.Repositories.Interfaces;
 public interface IFoodRepository : IRepository<Food>
 {
     Task UpdateAsync(Guid id, FoodDTO dto);
+    Task DeleteAsync(Guid id);
 }

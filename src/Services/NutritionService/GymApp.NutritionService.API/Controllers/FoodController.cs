@@ -17,4 +17,14 @@ public class FoodController(IFoodService service) : BaseController<Food, IFoodSe
 
         return NoContent();
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsync(Guid id)
+    {
+        if (!await Service.IfExistsAsync(id)) return NotFound();
+
+        await Service.DeleteAsync(id);
+
+        return NoContent();
+    }
 }

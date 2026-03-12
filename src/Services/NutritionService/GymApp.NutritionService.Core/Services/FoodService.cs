@@ -11,4 +11,9 @@ public class FoodService(IFoodRepository _repository) : Service<Food, IFoodRepos
     {
         await Repository.UpdateAsync(id, dto);
     }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        await Repository.DeleteAsync(id);
+    }
 }
