@@ -5,14 +5,11 @@ using GymApp.Shared.MessageQueues.Configuration;
 using GymApp.NutritionService.API.Features.EventConsumers;
 using GymApp.Shared.RedisCache.Configuration;
 using GymApp.NutritionService.Core.Caching;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using GymApp.NutritionService.Core.Services;
 using GymApp.NutritionService.Core.Repositories;
 using GymApp.NutritionService.Core.Services.Interfaces;
 using GymApp.NutritionService.Core.Repositories.Interfaces;
-using System.Threading.RateLimiting;
+using GymApp.NutritionService.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,59 +25,9 @@ builder.Services.AddDbContext<NutritionContext>(options =>
 builder.Services.AddOpenApi();
 builder.Services.AddLogging();
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.OnRejected = async (context, token) =>
-    {
-        context.HttpContext.Response.StatusCode = 429;
+builder.Services.AddRateLimiting();
 
-        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
-        {
-            await context.HttpContext.Response.WriteAsync(
-                $"Too many requests. Please try again after {retryAfter.TotalMinutes} minute(s).",
-                token
-            );
-        }
-        else
-        {
-            await context.HttpContext.Response.WriteAsync(
-                "Too many requests. Please try again later. ",
-                token
-            );
-        }
-    };
-
-    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
-            factory: partition => new FixedWindowRateLimiterOptions
-            {
-                AutoReplenishment = true,
-                PermitLimit = 10,
-                QueueLimit = 0,
-                Window = TimeSpan.FromMinutes(1)
-            }
-        )
-    );
-});
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = true,
-            ValidateIssuer = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!)),
-            ValidAudience = jwtSettings["Audience"],
-            ValidateLifetime = true,
-            ValidIssuer = jwtSettings["Issuer"]
-        };
-    });
-
-builder.Services.AddAuthorization();
+builder.Services.AddAuth(builder.Configuration.GetSection("jwtSettings"));
 
 builder.Services.AddMassTransitConfiguration(
     builder.Configuration["RabbitMQ:Host"] ?? "localhost",
@@ -119,10 +66,9 @@ app.UseCors(policy =>
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuth();
 
-app.UseRateLimiter();
+app.UseRateLimiting();
 
 app.MapControllers();
 
