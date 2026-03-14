@@ -12,6 +12,7 @@ using GymApp.NutritionService.Core.Services;
 using GymApp.NutritionService.Core.Repositories;
 using GymApp.NutritionService.Core.Services.Interfaces;
 using GymApp.NutritionService.Core.Repositories.Interfaces;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,42 @@ builder.Services.AddDbContext<NutritionContext>(options =>
 
 builder.Services.AddOpenApi();
 builder.Services.AddLogging();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = 429;
+
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+        {
+            await context.HttpContext.Response.WriteAsync(
+                $"Too many requests. Please try again after {retryAfter.TotalMinutes} minute(s).",
+                token
+            );
+        }
+        else
+        {
+            await context.HttpContext.Response.WriteAsync(
+                "Too many requests. Please try again later. ",
+                token
+            );
+        }
+    };
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 10,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
+            }
+        )
+    );
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -85,6 +122,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseRateLimiter();
+
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
@@ -94,16 +133,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Map("/", () => "Nutrition Service is running...");
-
-app.MapDelete("/foodsBulkDelete", async (NutritionContext context) =>
-{
-    var foodsList = context.Foods.ToList();
-
-    if (foodsList.Count == 0) return Results.Empty;
-
-    context.Foods.RemoveRange(foodsList);
-    await context.SaveChangesAsync();
-    return Results.NoContent();
-});
 
 app.Run();
