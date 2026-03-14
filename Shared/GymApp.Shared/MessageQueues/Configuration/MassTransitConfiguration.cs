@@ -1,3 +1,4 @@
+using GymApp.Shared.MessageQueues.Consumers;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -30,6 +31,8 @@ public static class MassTransitConfiguration
                 cfg.ConfigureEndpoints(context);
             });
         });
+
+        services.AddScoped<WorkoutCompletedEventConsumer>();
 
         return services;
     }

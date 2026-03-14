@@ -9,6 +9,9 @@ public static class RedisCacheConfiguration
         this IServiceCollection collection,
         string redisConnectionString)
     {
-        return collection.AddSingleton<IConnectionMultiplexer>(config => ConnectionMultiplexer.Connect(redisConnectionString));
+        collection.AddSingleton<IConnectionMultiplexer>(config => ConnectionMultiplexer.Connect(redisConnectionString));
+        collection.AddSingleton<IRedisService, RedisService>();
+
+        return collection;
     }
 }

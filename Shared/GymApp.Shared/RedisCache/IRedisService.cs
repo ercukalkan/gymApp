@@ -1,6 +1,4 @@
-using StackExchange.Redis;
-
-namespace GymApp.NutritionService.Core.Caching;
+namespace GymApp.Shared.RedisCache.Configuration;
 
 public interface IRedisService
 {

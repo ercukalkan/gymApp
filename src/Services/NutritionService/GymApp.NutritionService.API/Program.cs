@@ -2,13 +2,8 @@ using GymApp.NutritionService.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using GymApp.NutritionService.Data.DbSeeder;
 using GymApp.Shared.MessageQueues.Configuration;
-using GymApp.NutritionService.API.Features.EventConsumers;
+using GymApp.Shared.MessageQueues.Consumers;
 using GymApp.Shared.RedisCache.Configuration;
-using GymApp.NutritionService.Core.Caching;
-using GymApp.NutritionService.Core.Services;
-using GymApp.NutritionService.Core.Repositories;
-using GymApp.NutritionService.Core.Services.Interfaces;
-using GymApp.NutritionService.Core.Repositories.Interfaces;
 using GymApp.NutritionService.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,21 +31,12 @@ builder.Services.AddMassTransitConfiguration(
     typeof(WorkoutCompletedEventConsumer)
 );
 
-builder.Services.AddScoped<WorkoutCompletedEventConsumer>();
-
 builder.Services.AddRedisConfiguration(
     builder.Configuration.GetValue<string>("Redis:RedisCacheDb") ?? "localhost:6379"
 );
-builder.Services.AddSingleton<IRedisService, RedisService>();
 
-builder.Services.AddScoped<IFoodRepository, FoodRepository>();
-builder.Services.AddScoped<IFoodService, FoodService>();
-builder.Services.AddScoped<IMealRepository, MealRepository>();
-builder.Services.AddScoped<IMealService, MealService>();
-builder.Services.AddScoped<IDietRepository, DietRepository>();
-builder.Services.AddScoped<IDietService, DietService>();
-
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddNutritionServices();
+builder.Services.AddNutritionRepositories();
 
 var app = builder.Build();
 

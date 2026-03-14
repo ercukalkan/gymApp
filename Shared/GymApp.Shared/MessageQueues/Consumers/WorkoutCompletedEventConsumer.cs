@@ -1,7 +1,8 @@
 using MassTransit;
 using GymApp.Shared.MessageQueues.Events;
+using Microsoft.Extensions.Logging;
 
-namespace GymApp.NutritionService.API.Features.EventConsumers;
+namespace GymApp.Shared.MessageQueues.Consumers;
 
 public class WorkoutCompletedEventConsumer(ILogger<WorkoutCompletedEventConsumer> logger) : IConsumer<WorkoutCompletedEvent>
 {
