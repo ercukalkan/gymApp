@@ -54,6 +54,8 @@ app.UseHttpsRedirection();
 
 app.UseAuth();
 
+app.UseFoodLogMiddleware();
+
 app.UseRateLimiting();
 
 app.MapControllers();
