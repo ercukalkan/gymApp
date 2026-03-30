@@ -1,3 +1,4 @@
+using GymApp.NutritionService.API.Features.Filters;
 using GymApp.NutritionService.Core.Services.Interfaces;
 using GymApp.NutritionService.Core.Specifications;
 using GymApp.NutritionService.Data.Entities;
@@ -14,6 +15,7 @@ where TService : IService<TEntity>
     protected TService Service => service;
 
     [HttpGet("generic")]
+    [Cache(30)]
     public async Task<ActionResult<Pagination<TEntity>>> GetAllAsyncGeneric([FromQuery] PaginationParams parameters)
     {
         var spec = new PagingSpecification<TEntity>(parameters);
@@ -26,6 +28,7 @@ where TService : IService<TEntity>
 
     [HttpGet("generic/{id}")]
     [ActionName(nameof(GetByIdAsyncGeneric))]
+    [Cache(30)]
     public async Task<ActionResult<TEntity>> GetByIdAsyncGeneric(Guid id)
     {
         var entity = await Service.GetByIdAsyncGeneric(id);

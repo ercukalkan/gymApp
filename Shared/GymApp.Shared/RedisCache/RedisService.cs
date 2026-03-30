@@ -1,7 +1,6 @@
 using System.Text.Json;
 using StackExchange.Redis;
-
-namespace GymApp.Shared.RedisCache.Configuration;
+namespace GymApp.Shared.RedisCache;
 
 public class RedisService(IConnectionMultiplexer redisMultiplexer) : IRedisService
 {

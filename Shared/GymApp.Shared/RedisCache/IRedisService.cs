@@ -1,4 +1,4 @@
-namespace GymApp.Shared.RedisCache.Configuration;
+namespace GymApp.Shared.RedisCache;
 
 public interface IRedisService
 {
